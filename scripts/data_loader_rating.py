@@ -39,7 +39,7 @@ if __name__ == "__main__":
     
     if df_movies is not None:
         print("\n--- Vista de Películas ---")
-        print(df_movies.head())  
+        print(df_movies.head())
         print("--- Info del DataFrame de Películas ---")
         df_movies.info(show_counts=True)
     
