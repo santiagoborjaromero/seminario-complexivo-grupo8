@@ -41,9 +41,17 @@ git checkout -b feature/data-loader
 ***NOTA:** esto crea un nuevo branch ej:`feature/data-loader` y copia todo lo del branch **master** para que pueda programar o modificar* 
 
 Cuando ya se termina de modificar
-```
+```bash
 git add .
 git commit -m "FEAT Agrega script inicial de carga de datos"
 git push origin feature/data-loader 
-
 ```
+**NOTA:** En el git se debe unir los branches
+
+Luego se borra el branch el usuario que lo creo
+```bash
+git switch master         #cambia a la rama master
+git pull                  # actualiza cambios
+git branch -d feature/data-loader   # elimina rama que ya se aprobo
+```
+
