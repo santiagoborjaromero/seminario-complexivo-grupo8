@@ -9,7 +9,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # ----------------------------------------------------------------------------------    
 # Construir la ruta de los archivos dataset
 # ----------------------------------------------------------------------------------    
-DATA_PATH = os.path.join(SCRIPT_DIR, "..", "data", "rating.csv")
+DATA_PATH = os.path.join(SCRIPT_DIR, "..", "data", "movie.csv")
 
 def cargar_datos(path):
     print(f"Cargando datos desde {path}")
