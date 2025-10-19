@@ -14,7 +14,7 @@ Jorge Luis López Romo
 
 ## **Título del Proyecto**
 
-**Construcción de un Sistema de Recomendación Híbrido de Películas.**
+**Construcción de un Sistema de Recomendación Híbrido de Películas - SRP** 
 
 ![](https://img.shields.io/badge/Version-0.0.1_alpha-orange) 
 
