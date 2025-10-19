@@ -40,3 +40,10 @@ git checkout -b feature/data-loader
 ```
 ***NOTA:** esto crea un nuevo branch ej:`feature/data-loader` y copia todo lo del branch **master** para que pueda programar o modificar* 
 
+Cuando ya se termina de modificar
+```
+git add ,
+git commit -m "FEAT Agrega script inicial de carga de datos"
+git push origin feature/data-loader 
+
+```
