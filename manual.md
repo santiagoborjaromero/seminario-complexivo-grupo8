@@ -1,61 +1,35 @@
-# Universidad Autónoma de los Andes - Uniandes
-**Facultad de Ciencias Mercantiles
-Carrera de Ingeniería de Software**      
 
-**Proyecto Seminario Complexivo**
+# Trabajo en clase
+2025-10-18
 
-## **Grupo 8**
-
-**AUTORES:**
-
-Hugo Alfredo Herrera Villalva  
-Jaime Santiago Borja Romero  
-Jorge Luis López Romo
-
-## **Título del Proyecto**
-
-**Construcción de un Sistema de Recomendación Híbrido de Películas.**
-
-![](https://img.shields.io/badge/Version-0.0.1_alpha-orange) 
-
-## **Definición del Problema**
-
-Las recomendaciones de películas no son del todo precisas, ya que no consideran de manera adecuada variables como el sexo y la edad. En consecuencia, algunos géneros cinematográficos tienden a ser menos vistos por determinados grupos de personas.
-
-La desconfianza en las recomendaciones de películas debido a la gran cantidad de opciones y a las reseñas poco fiables, afecta al público objetivo al dificultar la elección de contenido de calidad, haciendo crucial la solución para que los usuarios puedan satisfacer sus necesidades de manera eficiente
-
-## **Descripción del Proyecto**
-
-## **Herramientas Utilizadas**
-![](https://img.shields.io/badge/Python-3.13-blue)
-![](https://img.shields.io/badge/FastAPI-0.112.0-red) 
-
-## **Instrucciones**
-
-### Proceso Pipeline
-
-Pipeline es un proceso de limpieza de los datasets fuente, que incluye:
-1. Depuración de caracteres UNICODE creando un respaldo de los archivos dataset para poder trabajar con ellos, manteniendo la data original aislada.
-2.  < Aumentar mas procesos>
-
-Consideraciones especiales
-
-1. Verificar que la carpeta `dataset_source` se encuentren los archivos requeridos para el proceso
-2. El directorio de trabajo es `pipeline`
-3. El archivo que indica los paths de carpetas para el proceso es `pipeline/src/tools/func.py`, se puede en el mismo contexto aumentar si es necesario
-4. Para ejecutar el proceso 
-```c
-cd pipeline
-python pipeline.py
+Crear entorno virtual
+```bash
+python -m venv venv
 ```
-5. Para visualizar los logs puede revisar en `pipeline/logs/srhp-{fecha}.log`
-
-
-# Prueba de diagramas mermaid
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+Activar entonrno virtual
+```bash
+.\venv\Scripts\activate
+```
+Desactivar entonrno virtual
+```bash
+deactivate
+```
+Respaldo inicial de librerias y eso se realiza cada vez que se instala alguna libreria
+```bash
+pip freeze > requirements.txt
+```
+Para instalar las librerias desde el archivo requirements.txt
+```bash
+pip install -r requirements.txt
+```
+Actualizar pip
+```bash
+pip install --upgrade pip
+```
+## Librerias  
+pandas, streamlit, seaborn, fastapi, numpy, matplot.pyplot
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn jupyter
+pip install missingno
+pip freeze > requirements.txt
 ```
