@@ -17,6 +17,10 @@ Respaldo inicial de librerias y eso se realiza cada vez que se instala alguna li
 ```bash
 pip freeze > requirements.txt
 ```
+Para instalar las librerias desde el archivo requirements.txt
+```bash
+pip install -r requirements.txt
+```
 Actualizar pip
 ```bash
 pip install --upgrade pip
