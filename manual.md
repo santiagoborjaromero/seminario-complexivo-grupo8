@@ -42,7 +42,7 @@ git checkout -b feature/data-loader
 
 Cuando ya se termina de modificar
 ```
-git add ,
+git add .
 git commit -m "FEAT Agrega script inicial de carga de datos"
 git push origin feature/data-loader 
 
