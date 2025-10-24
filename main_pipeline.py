@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from pipeline.data_loader import cargar_datos
 from pipeline.data_process import procesar_ratings, procesar_movie, procesar_tags
-from pipeline.func import guardar_informacion
+from pipeline.data_saving import guardar_informacion
 import sys
 
 if __name__ == "__main__":
@@ -28,6 +28,8 @@ if __name__ == "__main__":
     
     # Procesando Movies
     df_movie = procesar_movie(dict_df[files[0]])
+    # print(df_movie.head())
+
     # Procesando Rating
     df_rating_general, dim_rating = procesar_ratings(dict_df[files[2]])
     # Procesando Tags

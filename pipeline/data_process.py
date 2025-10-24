@@ -4,6 +4,7 @@ def procesar_movie(movie):
     # Establecer campos en minusculas y sin espacios en blanco
     movie.columns = movie.columns.str.lower() # en minuscular
     movie.columns = movie.columns.str.strip() # quitar espacios en blanco
+    movie = movie.set_index('movieid')
     return movie
     
 
@@ -36,8 +37,8 @@ def procesar_ratings(rating):
     # Creacion de la tablas de dimension 
     # Agrupacion
     grupo = rating.groupby(["movieid","userid", "year","month"])["rating"]
-    rating_movies_year_month_promedio = grupo.mean().reset_index()
-    rating_movies_year_month_conteo = grupo.count().reset_index()
+    rating_movies_year_month_promedio = grupo.mean()
+    rating_movies_year_month_conteo = grupo.count()
     # Union
     dim_rating = pd.merge(rating_movies_year_month_promedio, rating_movies_year_month_conteo, on=["movieid","userid", "year","month"], how="left")
     # Cambio de nombre de columnas
