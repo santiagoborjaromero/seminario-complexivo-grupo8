@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from pipeline.data_loader import cargar_datos
 from pipeline.data_process import procesar_ratings, procesar_movie
+import sys
 
 if __name__ == "__main__":
     # --------------------------------------
@@ -13,6 +14,12 @@ if __name__ == "__main__":
     # Carga de datos CSV
     # --------------------------------------
     dict_df = cargar_datos(files)
+    
+    # --------------------------------------
+    # Evaluacion si hay data prosigue
+    # --------------------------------------
+    if dict_df is None:
+        sys.exit(0) 
     
     # --------------------------------------
     # Procesamiento de la informacion

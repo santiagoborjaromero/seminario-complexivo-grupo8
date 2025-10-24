@@ -51,11 +51,3 @@ python pipeline.py
 5. Para visualizar los logs puede revisar en `pipeline/logs/srhp-{fecha}.log`
 
 
-# Prueba de diagramas mermaid
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
