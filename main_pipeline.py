@@ -46,12 +46,12 @@ if __name__ == "__main__":
     # --------------------------------------
     print("TABLA DE HECHO `h_movie`")
     print(tabla_hecho.head())
-    guardar_informacion("new_h_movie.csv", tabla_hecho)
+    guardar_informacion("data_h_movie.csv", tabla_hecho)
     
     
     print("TABLA DIMENSION `d_rating`")
     print(dim_rating.head())
-    guardar_informacion("new_d_rating.csv",dim_rating)
+    guardar_informacion("data_d_rating.csv",dim_rating)
 
     
     

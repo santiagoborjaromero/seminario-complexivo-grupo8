@@ -11,7 +11,8 @@ def cargar_datos(files):
     df = {}
     
     for file in files:
-        print(f"Cargando datos {file}")
+        print(f"------------------------------------------")
+        print(f"Importando datos desde {file}")
         start_time = time.perf_counter()
         try:
             f = os.path.join(SCRIPT_DIR, "..", "data", file)

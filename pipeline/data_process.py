@@ -1,31 +1,44 @@
 import pandas as pd
 
 def procesar_movie(movie):
+    print("-----------------------------------")
+    print("Procesando Data Movie")
+    print("Procesando Data Movie - Conversión de campos en minusculas y espacios en blanco")
     # Establecer campos en minusculas y sin espacios en blanco
     movie.columns = movie.columns.str.lower() # en minuscular
     movie.columns = movie.columns.str.strip() # quitar espacios en blanco
+    print("Procesando Data Movie - Asignación de indice")
     movie = movie.set_index('movieid')
     return movie
     
 
 def procesar_ratings(rating):
+    print("-----------------------------------")
+    print("Procesando Data Rating")
+    print("Procesando Data Rating - Conversión de campos en minusculas y espacios en blanco")
     # Establecer campos en minusculas y sin espacios en blanco
     rating.columns = rating.columns.str.lower() # en minuscular
     rating.columns = rating.columns.str.strip() # quitar espacios en blanco
     
+    print("Procesando Data Rating - Conversion de campo timestamp de object a datetime")
     # Cambio de timestamp tipo object a datetime
     rating["timestamp"] = pd.to_datetime(rating["timestamp"])
+    
+    print("Procesando Data Rating - Creando campos adicionales como 'year' y 'month'")
     # Creacion de dos columnas year y month 
     rating["year"] =  rating['timestamp'].dt.year
     rating["month"] =  rating['timestamp'].dt.month
     
+    print("Procesando Data Rating - Agrupacion por indice para obtener el rating promedio")
     # Agrupacion general por pelicula 
     rating_movies_promedio = rating.groupby("movieid")["rating"].mean()
     rating_movies_conteo = rating.groupby(["movieid"])["rating"].count()
     
+    print("Procesando Data Rating - Union de resultados")
     # Union de promedio y conteo para que sea unido a movies de forma general
     ratings_agg = pd.merge(rating_movies_promedio, rating_movies_conteo, on="movieid", how="left")
     
+    print("Procesando Data Rating - Renombrado de columnas")
     # Cambio de nombre de columnas
     ratings_agg = ratings_agg.rename(
         columns={
@@ -34,6 +47,7 @@ def procesar_ratings(rating):
         }
     )
     
+    print("Procesando Data Rating - Creación de la tabla de dimension ")
     # Creacion de la tablas de dimension 
     # Agrupacion
     grupo = rating.groupby(["movieid","userid", "year","month"])["rating"]
@@ -63,7 +77,8 @@ def procesar_tags(tags_df):
     argumento tag_df,  como dataframe raw 
     retorna la data agrupada por el id de pelicula y tag
     """
-    print("Procesando data")
+    print("-----------------------------------")
+    print("Procesando Data Tags")
     
     # Establecer campos en minusculas y sin espacios en blanco
     tags_df.columns = tags_df.columns.str.lower() # en minuscular
