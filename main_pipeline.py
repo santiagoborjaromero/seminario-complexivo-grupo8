@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from pipeline.data_loader import cargar_datos
 from pipeline.data_process import procesar_ratings, procesar_movie, procesar_tags
+from pipeline.func import guardar_informacion
 import sys
 
 if __name__ == "__main__":
@@ -43,9 +44,12 @@ if __name__ == "__main__":
     # --------------------------------------
     print("TABLA DE HECHO `h_movie`")
     print(tabla_hecho.head())
+    guardar_informacion("new_h_movie.csv", tabla_hecho)
+    
     
     print("TABLA DIMENSION `d_rating`")
     print(dim_rating.head())
+    guardar_informacion("new_d_rating.csv",dim_rating)
 
     
     
