@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from pipeline.data_loader import cargar_datos
-from pipeline.data_process import procesar_ratings, procesar_movie
+from pipeline.data_process import procesar_ratings, procesar_movie, procesar_tags
 import sys
 
 if __name__ == "__main__":
@@ -29,12 +29,14 @@ if __name__ == "__main__":
     df_movie = procesar_movie(dict_df[files[0]])
     # Procesando Rating
     df_rating_general, dim_rating = procesar_ratings(dict_df[files[2]])
-    
+    # Procesando Tags
+    df_tags_general = procesar_tags(dict_df[files[1]])
     
     # --------------------------------------
     # Uniones
     # --------------------------------------
-    tabla_hecho = pd.merge(df_movie, df_rating_general, on="movieid", how="left")
+    tabla_hecho_parcial = pd.merge(df_movie, df_rating_general, on="movieid", how="left")
+    tabla_hecho = pd.merge(tabla_hecho_parcial, df_tags_general, on="movieid", how="left")
     
     # --------------------------------------
     # Resultados
