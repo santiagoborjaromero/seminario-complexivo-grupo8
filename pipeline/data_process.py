@@ -31,10 +31,11 @@ def procesar_ratings(rating):
     
     print("Procesando Data Rating - Agrupacion por indice para obtener el rating promedio")
     # Agrupacion general por pelicula 
-    rating_movies_promedio = rating.groupby("movieid")["rating"].mean()
-    rating_movies_conteo = rating.groupby(["movieid"])["rating"].count()
+    grupo = rating.groupby(["movieid"])["rating"]
+    rating_movies_promedio = grupo.mean()
+    rating_movies_conteo = grupo.count()
     
-    print("Procesando Data Rating - Union de resultados")
+    print("Procesando Data Rating - Seleccion de data para adicionar a la tabla de hecho")
     # Union de promedio y conteo para que sea unido a movies de forma general
     ratings_agg = pd.merge(rating_movies_promedio, rating_movies_conteo, on="movieid", how="left")
     
@@ -46,8 +47,9 @@ def procesar_ratings(rating):
             "rating_y": "rating_conteo"
         }
     )
+    ratings_agg.reset_index(inplace=True)
     
-    print("Procesando Data Rating - Creación de la tabla de dimension ")
+    print("Procesando Data Rating - Seleccion de data para tabla de dimension ")
     # Creacion de la tablas de dimension 
     # Agrupacion
     grupo = rating.groupby(["movieid","userid", "year","month"])["rating"]
@@ -55,6 +57,7 @@ def procesar_ratings(rating):
     rating_movies_year_month_conteo = grupo.count()
     # Union
     dim_rating = pd.merge(rating_movies_year_month_promedio, rating_movies_year_month_conteo, on=["movieid","userid", "year","month"], how="left")
+    
     # Cambio de nombre de columnas
     dim_rating = dim_rating.rename(
         columns={
@@ -62,8 +65,17 @@ def procesar_ratings(rating):
             "rating_y": "conteo"
         }
     )
-    # Creo un campo indice y relleno con secuencial
+    
+    # Creación de un campo indice y relleno con secuencial
     dim_rating["ratingid"] = range(1, len(dim_rating) + 1)
+    # dim_rating.reset_index(inplace=True)
+    # dim_rating.set_index("ratingid", inplace=True)
+    dim_rating.reset_index(inplace=True)
+    
+    #Eliminado columna Conteo ya que el valor siempre es 1
+    dim_rating = dim_rating.drop('conteo', axis=1)
+    
+    print(dim_rating.head())
         
     return ratings_agg, dim_rating
 
