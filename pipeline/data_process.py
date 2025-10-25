@@ -8,8 +8,14 @@ def procesar_movie(movie):
     # Establecer campos en minusculas y sin espacios en blanco
     movie.columns = movie.columns.str.lower() # en minuscular
     movie.columns = movie.columns.str.strip() # quitar espacios en blanco
-    print("Procesando Data Movie - Asignación de indice")
-    movie = movie.set_index('movieid')
+
+    print("Procesando Data Movie - Aplicando One-Hot Encoding a la columna 'genres'")
+    # Separar generos por '|' y crear columnas dummy (One-Hot Encoding)
+    genres_dummies = movie['genres'].str.get_dummies('|')
+    
+    # Unir las nuevas columnas de generos al dataframe original
+    movie = pd.concat([movie, genres_dummies], axis=1)
+
     return movie
     
 
@@ -171,4 +177,7 @@ def procesar_tags(tags_df):
     #Agrupacion de tags
     tags_agg = df_strings.groupby('movieid')['tag'].apply(join_unique_tags)
 
-    return tags_agg
+    # Convertir la Serie a DataFrame y resetear el índice para que movieid sea una columna
+    tags_agg_df = tags_agg.to_frame().reset_index()
+
+    return tags_agg_df
