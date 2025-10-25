@@ -10,12 +10,12 @@ def procesar_movie(movie):
     movie.columns = movie.columns.str.strip() # quitar espacios en blanco
 
     print("Procesando Data Movie - Aplicando One-Hot Encoding a la columna 'genres'")
-    # Separar generos por '|' y crear columnas dummy (One-Hot Encoding)
-    genres_dummies = movie['genres'].str.get_dummies('|')
-    genres_dummies.columns = genres_dummies.columns.str.replace(' ', '').str.replace('-', '').str.replace('(', '').str.replace(')', '')
     
-    # Unir las nuevas columnas de generos al dataframe original
-    movie = pd.concat([movie, genres_dummies], axis=1)
+    genres_dummies = movie['genres'].str.get_dummies('|') # Separa generos por '|' y crear One-Hot Encoding
+    columnas_limpias = genres_dummies.columns.str.replace(' ', '_')# Reemplaza espacios en blanco por _
+    columnas_limpias = columnas_limpias.str.replace(r'[^a-zA-Z0-9_]', '', regex=True) # Reemplaza caracteres especiales
+    genres_dummies.columns = columnas_limpias #nombra nuevas columnas limpias
+    movie = pd.concat([movie, genres_dummies], axis=1) #une dataframes genres a df movie
 
     return movie
     
