@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def procesar_movie(movie):
     print("-----------------------------------")
@@ -28,8 +29,15 @@ def procesar_ratings(rating):
     # Creacion de dos columnas year y month 
     rating["year"] =  rating['timestamp'].dt.year
     rating["month"] =  rating['timestamp'].dt.month
+
     
-    print("Procesando Data Rating - Agrupacion por indice para obtener el rating promedio")
+    # -------------------------------------------
+    # AG1 
+    # Argupacion general 1 insumo para Tabla de Hecho
+    # Promedio de raiting y conteo 
+    # -------------------------------------------------------------------
+    
+    print("Procesando Data Rating - Agrupacion 1 por indice para obtener el rating promedio")
     # Agrupacion general por pelicula 
     grupo = rating.groupby(["movieid"])["rating"]
     rating_movies_promedio = grupo.mean()
@@ -37,18 +45,67 @@ def procesar_ratings(rating):
     
     print("Procesando Data Rating - Seleccion de data para adicionar a la tabla de hecho")
     # Union de promedio y conteo para que sea unido a movies de forma general
-    ratings_agg = pd.merge(rating_movies_promedio, rating_movies_conteo, on="movieid", how="left")
+    ratings_agg1 = pd.merge(rating_movies_promedio, rating_movies_conteo, on="movieid", how="left")
     
     print("Procesando Data Rating - Renombrado de columnas")
     # Cambio de nombre de columnas
-    ratings_agg = ratings_agg.rename(
+    ratings_agg1 = ratings_agg1.rename(
         columns={
             "rating_x": "rating_promedio",
             "rating_y": "rating_conteo"
         }
     )
-    ratings_agg.reset_index(inplace=True)
+    ratings_agg1.reset_index(inplace=True)
     
+    # -------------------------------------------------------------------
+    # AG2
+    # Argupacion general 2 insumo para Tabla de Hecho
+    # Promedio de raiting y conteo 
+    # -------------------------------------------------------------------
+    print("Procesando Data Rating - Agrupacion 2 por indice para obtener el rating promedio por pelicula y año")
+    df_year = rating.groupby(["movieid","year"]).agg({"rating": "mean"})
+    # print(df_year)
+    df_year.reset_index(inplace=True)
+    df_year.set_index("movieid", inplace=True)
+    
+    print("Procesando Data Rating - Agrupacion 2 - Creacion de tabla pivot")
+    df_year_pivot = df_year.pivot(columns='year', values=['rating'])
+    
+    print("Procesando Data Rating - Agrupacion 2 - Reemplazo valores NaN")
+    df_year_pivot = df_year_pivot.replace(np.nan, 0)
+    # print(df_year_pivot)
+    
+    df_year_pivot = df_year_pivot.reset_index()
+    # print(df_year_pivot)
+    df_year_pivot.rename(columns={'movieid': 'movieid'}, inplace=True) 
+    
+    print("Procesando Data Rating - Agrupacion 2 - Cambio de multiples headers a uno solo")
+    columns = [col[1] if isinstance(col, tuple) else col for col in df_year_pivot.columns]
+    columns[0] = "movieid"
+    df_year_pivot.columns = columns
+    # print(df_year_pivot)
+    
+    print("Procesando Data Rating - Agrupacion 2 - Listado de columnas por año")
+    year_cols = [c for c in df_year_pivot.columns if isinstance(c, str) and c.isdigit()]
+    for col in year_cols:
+        df_year_pivot[col] = pd.to_numeric(df_year_pivot[col], errors='coerce')
+    
+    # print(df_year_pivot)
+    
+    # # Union AG 1 y AG 2
+    print("Procesando Data Rating - Union Agrupacion 1 y 2")
+    ratings_agg_temp= pd.merge(ratings_agg1, df_year_pivot, on="movieid", how="left")
+    ratings_agg_temp = ratings_agg_temp.replace(np.nan, 0)
+    print("Procesando Data Rating - Eliminado de duplicados")
+    # ratings_agg = ratings_agg_temp.drop_duplicates(subset=['movieid'])
+    ratings_agg = ratings_agg_temp
+    print(ratings_agg)
+    
+    
+    # -------------------------------------------------------------------
+    # Tabla dimension 
+    # Promedio de raiting y conteo 
+    # -------------------------------------------------------------------
     print("Procesando Data Rating - Seleccion de data para tabla de dimension ")
     # Creacion de la tablas de dimension 
     # Agrupacion
