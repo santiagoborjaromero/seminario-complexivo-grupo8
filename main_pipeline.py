@@ -46,11 +46,12 @@ if __name__ == "__main__":
     # --------------------------------------
     
     archivos = [
+        # {"file_name": "movie_proc", "target": df_movie},
         {"file_name": "movie", "target": movie_source},
         {"file_name": "rating", "target": rating_source},
         {"file_name": "tag", "target": df_tags_general},
-        {"file_name": "peliculas_rating_general_y_por_anio_con_tag", "target": tabla_hecho},
-        {"file_name": "pelicula_promedio_raiting_por_usuario_por_anio_y_mes", "target": dim_rating},
+        {"file_name": "procesados_movies", "target": tabla_hecho},
+        {"file_name": "procesados_ratings", "target": dim_rating},
     ]
     
     for file in archivos:

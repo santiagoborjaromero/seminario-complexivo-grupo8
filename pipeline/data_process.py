@@ -192,9 +192,9 @@ def procesar_tags(tags_df):
     df_strings['tag'] = df_strings['tag'].str.replace(r'[^a-zA-Z0-9]', '', regex=True)
     
     # #Agrupacion de tags
-    # tags_agg = df_strings.groupby('movieid')['tag'].apply(join_unique_tags)
+    tags_agg = df_strings.groupby('movieid')['tag'].apply(join_unique_tags)
 
     # # Convertir la Serie a DataFrame y resetear el índice para que movieid sea una columna
-    # tags_agg_df = tags_agg.to_frame().reset_index()
+    tags_agg_df = tags_agg.to_frame().reset_index()
 
-    return df_strings
+    return tags_agg_df
