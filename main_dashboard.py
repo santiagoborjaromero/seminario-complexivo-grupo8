@@ -6,18 +6,18 @@ import os
 
 st.set_page_config(
     page_title="🔥 Recomendacion de Películas 🔥",
-    page_icon="🔥",
+    page_icon="🔥", #https://docs.streamlit.io/develop/api-reference/navigation/st.page
     layout="wide"
 )
 
 st.title(" 🔥 Dashboard Recomendacíon Hibrida de Películas 🔥 ")
 
-# --- Definición de Rutas ---
+#  Definición de Rutas 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Define la ruta del archivo procesado
 DATA_PROCESS_DIR = os.path.join(BASE_DIR, 'data', 'process')
 PROCESSED_FILE = os.path.join(DATA_PROCESS_DIR, 'procesados_movies.csv')
 
-# --- Funciones de Carga y Helpers ---
+#  Funciones de Carga  
 
 @st.cache_data 
 def load_data(file_path):
@@ -45,7 +45,7 @@ def get_dynamic_columns(df):
     
     return genre_cols, year_cols
 
-# --- Función Principal ---
+#  Función Principal 
 def main():
     """
     Función principal ejecuta Streamlit.
@@ -62,7 +62,7 @@ def main():
     # Llama a la función helper para obtener las listas de columnas
     genre_columns, year_columns = get_dynamic_columns(df_procesado)
 
-    # --- Barra Lateral (Filtros) ---
+    #  Barra Lateral (Filtros) 
     st.sidebar.header("Filtros Interactivos")
 
     # Crea un widget géneros
@@ -89,7 +89,7 @@ def main():
         value=min_ratings_limit
     ) 
 
-    # --- Filtrado del DataFrame ---
+    #  Filtrado del DataFrame 
     
     df_filtrado = df_procesado.copy() # copia del df completo
     
@@ -109,13 +109,13 @@ def main():
         for genre in selected_genres:
             df_filtrado = df_filtrado[df_filtrado[genre] == 1] #usa los 1 para filtrar usando el la separacion de los generos
             
-    # --- Visualización ---
+    #  Visualización 
     
     st.header("Resultados del Análisis")
     col1, col2 = st.columns(2)
     col1.metric("Películas Encontradas", f"{len(df_filtrado):,}")
     col2.metric("Total Películas en BD", f"{len(df_procesado):,}")
-    st.markdown("---") # Línea horizontal
+    st.markdown("---")
     
     # --- Visualizaciones con Plotly ---
     # Comprueba si el dataframe filtrado NO está vacío antes de intentar dibujar
@@ -146,14 +146,43 @@ def main():
             )
             st.plotly_chart(fig_scatter, use_container_width=True)
 
+        #  GRÁFICO DE EVOLUCIÓN 
+        st.markdown("---")
+        st.subheader("Evolución del Rating de una Película") # Usando tu Matriz Pivote de Años 
+        
+        selected_movie_title = st.selectbox(
+            "Selecciona una película para ver su evolución:",
+            options=df_filtrado['title'].unique() # widget  que elege película del DataFrame filtrado
+        ) 
+        
+        if selected_movie_title:
+            movie_data = df_filtrado[df_filtrado['title'] == selected_movie_title].iloc[0] # Extrae la fila completa de la película
+            evolution_data = movie_data[year_columns] # Toma solo las columnas de año del pivote
+            evolution_data = evolution_data[evolution_data > 0] # Filtra los años donde el rating no sea 0 
+            
+            if not evolution_data.empty:
+                # Convierte los datos de la serie a un DataFrame para Plotly
+                df_evo = pd.DataFrame({
+                    'Anio': evolution_data.index.astype(int),
+                    'Rating Promedio': evolution_data.values
+                })
+                # Crea el gráfico de líneas
+                fig_line = px.line(
+                    df_evo, x='Anio', y='Rating Promedio',
+                    title=f"Evolución del Rating para: {selected_movie_title}", markers=True
+                )
+                fig_line.update_xaxes(type='linear') # Asegura que el eje X sea numérico
+                st.plotly_chart(fig_line, use_container_width=True)
+            else:
+                st.warning(f"No hay datos de evolución de rating para '{selected_movie_title}'.")
+        
     else:
-       
         st.warning("No se encontraron películas con los filtros seleccionados.")
 
     
     st.subheader("Datos Filtrados (Detalle)")
     st.dataframe(df_filtrado, use_container_width=True) # Muestra el DataFrame filtrado
-      
-# Este bloque SIEMPRE debe ir al final
+
+
 if __name__ == "__main__":
     main()
