@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Define la ruta del archi
 DATA_PROCESS_DIR = os.path.join(BASE_DIR, 'data', 'process')
 PROCESSED_FILE = os.path.join(DATA_PROCESS_DIR, 'procesados_movies.csv')
 
-# --- Funciones de Carga  ---
+# --- Funciones de Carga y Helpers ---
 
 @st.cache_data 
 def load_data(file_path):
@@ -49,6 +49,7 @@ def get_dynamic_columns(df):
 def main():
     """
     Función principal ejecuta Streamlit.
+    TODA LA LÓGICA DEBE IR DENTRO DE ESTA FUNCIÓN.
     """
     st.markdown("Versión V1.0: Visualizando los datos de `procesados_movies.csv`.")
 
@@ -57,23 +58,23 @@ def main():
     
     if df_procesado is None:
         return
-  
+ 
     # Llama a la función helper para obtener las listas de columnas
     genre_columns, year_columns = get_dynamic_columns(df_procesado)
 
-    #  Barra Lateral  ---
+    # --- Barra Lateral (Filtros) ---
     st.sidebar.header("Filtros Interactivos")
 
     # Crea un widget géneros
     selected_genres = st.sidebar.multiselect(
-        "Seleccionar Géneros (Lógica 'Y'):",
+        "Elige los Géneros:",
         options=sorted(genre_columns), # Usa de género dinámicamente
         default=[] 
     )
 
     # Crea un widget  rango de rating
     rating_slider = st.sidebar.slider(
-        "Filtrar por Rating Promedio:",
+        "Filtro por Rating Promedio:",
         min_value=0.0,
         max_value=5.0,
         value=(0.0, 5.0) # tupla (min, max) para definir un rango
@@ -82,12 +83,77 @@ def main():
     # Crea un slider para la popularidad basado en 'rating_conteo'
     min_ratings_limit = int(df_procesado['rating_conteo'].quantile(0.75))
     total_ratings_slider = st.sidebar.slider(
-        "Filtrar por Mínimo de Calificaciones:",
+        "Filtro por Calificaciones:",
         min_value=0,
         max_value=int(df_procesado['rating_conteo'].max()),
         value=min_ratings_limit
     ) 
 
+    # --- Filtrado del DataFrame ---
+    
+    df_filtrado = df_procesado.copy() # copia del df completo
+    
+    # Aplica el filtro de Rating Promedio basado en el slider con tupla (min_valor, max_valor)
+    df_filtrado = df_filtrado[
+        (df_filtrado['rating_promedio'] >= rating_slider[0]) &
+        (df_filtrado['rating_promedio'] <= rating_slider[1])
+    ]
 
+    # Aplica el filtro de Total de Ratings basado en el slider
+    df_filtrado = df_filtrado[
+        df_filtrado['rating_conteo'] >= total_ratings_slider
+    ]
+
+    
+    if selected_genres:  # se ejecuta cuando se seleccionado un género
+        for genre in selected_genres:
+            df_filtrado = df_filtrado[df_filtrado[genre] == 1] #usa los 1 para filtrar usando el la separacion de los generos
+            
+    # --- Visualización ---
+    
+    st.header("Resultados del Análisis")
+    col1, col2 = st.columns(2)
+    col1.metric("Películas Encontradas", f"{len(df_filtrado):,}")
+    col2.metric("Total Películas en BD", f"{len(df_procesado):,}")
+    st.markdown("---") # Línea horizontal
+    
+    # --- Visualizaciones con Plotly ---
+    # Comprueba si el dataframe filtrado NO está vacío antes de intentar dibujar
+    if not df_filtrado.empty:
+        st.subheader("Visualizaciones de Popularidad")
+
+        # Crea dos columnas para los gráficos
+        col_graf1, col_graf2 = st.columns(2)
+
+        with col_graf1:
+            #  Top 10 Películas por Popularidad por 'rating_conteo'
+            st.markdown("#### Top 10 Películas (por N° de Calificaciones)")
+            df_top10 = df_filtrado.nlargest(10, 'rating_conteo')
+            fig_bar = px.bar(
+                df_top10, x='rating_conteo', y='title', orientation='h',
+                title='Top 10 Películas más Populares', hover_data=['rating_promedio', 'genres']
+            )
+            fig_bar.update_layout(yaxis={'categoryorder':'total ascending'})
+            st.plotly_chart(fig_bar, use_container_width=True)
+
+        with col_graf2:
+            # Relación entre Rating y Popularidad
+            st.markdown("#### Rating Promedio vs. Popularidad")
+            fig_scatter = px.scatter(
+                df_filtrado, x='rating_conteo', y='rating_promedio',
+                title='Rating vs. Popularidad', hover_data=['title', 'genres'],
+                color='rating_promedio', size='rating_conteo' 
+            )
+            st.plotly_chart(fig_scatter, use_container_width=True)
+
+    else:
+       
+        st.warning("No se encontraron películas con los filtros seleccionados.")
+
+    
+    st.subheader("Datos Filtrados (Detalle)")
+    st.dataframe(df_filtrado, use_container_width=True) # Muestra el DataFrame filtrado
+      
+# Este bloque SIEMPRE debe ir al final
 if __name__ == "__main__":
     main()
