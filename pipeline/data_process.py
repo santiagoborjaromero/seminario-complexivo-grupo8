@@ -1,42 +1,55 @@
 import pandas as pd
 import numpy as np
 
-def procesar_movie(movie):
+def procesar_movie(movie_source):
     print("-----------------------------------")
     print("Procesando Data Movie")
     print("Procesando Data Movie - Conversión de campos en minusculas y espacios en blanco")
+    
+    
     # Establecer campos en minusculas y sin espacios en blanco
-    movie.columns = movie.columns.str.lower() # en minuscular
-    movie.columns = movie.columns.str.strip() # quitar espacios en blanco
+    movie_source.columns = movie_source.columns.str.lower() # en minuscular
+    movie_source.columns = movie_source.columns.str.strip() # quitar espacios en blanco
+    
+    #Limpieza de columnas
+    # movie_source["title"] = movie_source["title"].str.replace("ÃƒÂ©", "e")
+    # movie_source["title"] = movie_source["title"].str.replace("Ã©", "a")
+    # movie_source["title"] = movie_source["title"].str.replace("Ã§", "c")
+    # movie_source["title"] = movie_source["title"].str.replace("(NyÃ» YÃ´ku no koppu)", "")
+    # movie_source["title"] = movie_source["title"].str.replace("(BÃ¼vÃ¶s vadÃ¡sz)", "")
+    # movie_source["title"] = movie_source["title"].str.replace("(Ã kÃ¶ldum klaka)", "")
+    # movie_source["title"] = movie_source["title"].str.replace("Ã¤", "ä")
+    # movie_source["title"] = movie_source["title"].str.replace("Ã©", "é")
+    movie_source["title"] = movie_source["title"].str.replace(r"[^a-zA-Z0-9'-()\sáéíóúÁÉÍÓÚ,.]", "", regex=True) # Reemplaza caracteres especiales
 
     print("Procesando Data Movie - Aplicando One-Hot Encoding a la columna 'genres'")
-    
+    movie = movie_source.copy()
     genres_dummies = movie['genres'].str.get_dummies('|') # Separa generos por '|' y crear One-Hot Encoding
     columnas_limpias = genres_dummies.columns.str.replace(' ', '_')# Reemplaza espacios en blanco por _
     columnas_limpias = columnas_limpias.str.replace(r'[^a-zA-Z0-9_]', '', regex=True) # Reemplaza caracteres especiales
     genres_dummies.columns = columnas_limpias #nombra nuevas columnas limpias
     movie = pd.concat([movie, genres_dummies], axis=1) #une dataframes genres a df movie
 
-    return movie
+    return movie, movie_source
     
 
-def procesar_ratings(rating):
+def procesar_ratings(rating_source):
     print("-----------------------------------")
     print("Procesando Data Rating")
     print("Procesando Data Rating - Conversión de campos en minusculas y espacios en blanco")
     # Establecer campos en minusculas y sin espacios en blanco
-    rating.columns = rating.columns.str.lower() # en minuscular
-    rating.columns = rating.columns.str.strip() # quitar espacios en blanco
+    rating_source.columns = rating_source.columns.str.lower() # en minuscular
+    rating_source.columns = rating_source.columns.str.strip() # quitar espacios en blanco
     
     print("Procesando Data Rating - Conversion de campo timestamp de object a datetime")
     # Cambio de timestamp tipo object a datetime
-    rating["timestamp"] = pd.to_datetime(rating["timestamp"])
+    rating_source["timestamp"] = pd.to_datetime(rating_source["timestamp"])
+    rating = rating_source.copy()
     
     print("Procesando Data Rating - Creando campos adicionales como 'year' y 'month'")
     # Creacion de dos columnas year y month 
     rating["year"] =  rating['timestamp'].dt.year
     rating["month"] =  rating['timestamp'].dt.month
-
     
     # -------------------------------------------
     # AG1 
@@ -106,7 +119,7 @@ def procesar_ratings(rating):
     print("Procesando Data Rating - Eliminado de duplicados")
     # ratings_agg = ratings_agg_temp.drop_duplicates(subset=['movieid'])
     ratings_agg = ratings_agg_temp
-    print(ratings_agg)
+    # print(ratings_agg)
     
     
     # -------------------------------------------------------------------
@@ -139,9 +152,9 @@ def procesar_ratings(rating):
     #Eliminado columna Conteo ya que el valor siempre es 1
     dim_rating = dim_rating.drop('conteo', axis=1)
     
-    print(dim_rating.head())
+    # print(dim_rating.head())
         
-    return ratings_agg, dim_rating
+    return ratings_agg, dim_rating, rating_source
 
 
 def join_unique_tags(tags):
@@ -160,6 +173,9 @@ def procesar_tags(tags_df):
     tags_df.columns = tags_df.columns.str.lower() # en minuscular
     tags_df.columns = tags_df.columns.str.strip() # quitar espacios en blanco
     
+    # Cambio de timestamp tipo object a datetime
+    tags_df["timestamp"] = pd.to_datetime(tags_df["timestamp"])
+    
     # Eliminar tags NaN
     tags_df = tags_df.dropna(subset=["tag"], how="all")
     
@@ -175,10 +191,10 @@ def procesar_tags(tags_df):
     # Reemplazamos valores que no son alfanumericos 
     df_strings['tag'] = df_strings['tag'].str.replace(r'[^a-zA-Z0-9]', '', regex=True)
     
-    #Agrupacion de tags
-    tags_agg = df_strings.groupby('movieid')['tag'].apply(join_unique_tags)
+    # #Agrupacion de tags
+    # tags_agg = df_strings.groupby('movieid')['tag'].apply(join_unique_tags)
 
-    # Convertir la Serie a DataFrame y resetear el índice para que movieid sea una columna
-    tags_agg_df = tags_agg.to_frame().reset_index()
+    # # Convertir la Serie a DataFrame y resetear el índice para que movieid sea una columna
+    # tags_agg_df = tags_agg.to_frame().reset_index()
 
-    return tags_agg_df
+    return df_strings

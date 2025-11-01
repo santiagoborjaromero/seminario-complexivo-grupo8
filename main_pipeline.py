@@ -27,11 +27,11 @@ if __name__ == "__main__":
     # --------------------------------------
     
     # Procesando Movies
-    df_movie = procesar_movie(dict_df[files[0]])
+    df_movie, movie_source = procesar_movie(dict_df[files[0]])
     # print(df_movie.head())
 
     # Procesando Rating
-    df_rating_general, dim_rating = procesar_ratings(dict_df[files[2]])
+    df_rating_general, dim_rating , rating_source= procesar_ratings(dict_df[files[2]])
     # Procesando Tags
     df_tags_general = procesar_tags(dict_df[files[1]])
     
@@ -42,22 +42,20 @@ if __name__ == "__main__":
     tabla_hecho = pd.merge(tabla_hecho_parcial, df_tags_general, on="movieid", how="left")
     
     # --------------------------------------
-    # Resultados
+    # Originales Limpios
     # --------------------------------------
-    print("TABLA DE HECHO `h_movie`")
-    print(tabla_hecho.head())
-    guardar_informacion("h_movie.csv", tabla_hecho)
+    
+    archivos = [
+        {"file_name": "movie", "target": movie_source},
+        {"file_name": "rating", "target": rating_source},
+        {"file_name": "tag", "target": df_tags_general},
+        {"file_name": "peliculas_rating_general_y_por_anio_con_tag", "target": tabla_hecho},
+        {"file_name": "pelicula_promedio_raiting_por_usuario_por_anio_y_mes", "target": dim_rating},
+    ]
+    
+    for file in archivos:
+        print(f"Guardando {file["file_name"]}")
+        file["target"].head()
+        guardar_informacion(f"{file['file_name']}.csv",file["target"])
     
     
-    print("TABLA DIMENSION `d_rating`")
-    print(dim_rating.head())
-    guardar_informacion("d_rating.csv",dim_rating)
-
-    
-    
-    
-    
-    
-    
-
-

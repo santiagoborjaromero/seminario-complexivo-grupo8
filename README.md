@@ -29,25 +29,3 @@ La desconfianza en las recomendaciones de películas debido a la gran cantidad d
 ## **Herramientas Utilizadas**
 ![](https://img.shields.io/badge/Python-3.13-blue)
 ![](https://img.shields.io/badge/FastAPI-0.112.0-red) 
-
-## **Instrucciones**
-
-### Proceso Pipeline
-
-Pipeline es un proceso de limpieza de los datasets fuente, que incluye:
-1. Depuración de caracteres UNICODE creando un respaldo de los archivos dataset para poder trabajar con ellos, manteniendo la data original aislada.
-2.  < Aumentar mas procesos>
-
-Consideraciones especiales
-
-1. Verificar que la carpeta `dataset_source` se encuentren los archivos requeridos para el proceso
-2. El directorio de trabajo es `pipeline`
-3. El archivo que indica los paths de carpetas para el proceso es `pipeline/src/tools/func.py`, se puede en el mismo contexto aumentar si es necesario
-4. Para ejecutar el proceso 
-```c
-cd pipeline
-python pipeline.py
-```
-5. Para visualizar los logs puede revisar en `pipeline/logs/srhp-{fecha}.log`
-
-
