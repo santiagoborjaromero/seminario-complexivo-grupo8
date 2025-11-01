@@ -27,13 +27,13 @@ if __name__ == "__main__":
     # --------------------------------------
     
     # Procesando Movies
-    df_movie, movie_source = procesar_movie(dict_df[files[0]])
+    df_movie, movie_source, unique_genres = procesar_movie(dict_df[files[0]])
     # print(df_movie.head())
 
     # Procesando Rating
     df_rating_general, dim_rating , rating_source= procesar_ratings(dict_df[files[2]])
     # Procesando Tags
-    df_tags_general = procesar_tags(dict_df[files[1]])
+    df_tags_general, tags = procesar_tags(dict_df[files[1]])
     
     # --------------------------------------
     # Uniones
@@ -49,7 +49,8 @@ if __name__ == "__main__":
         # {"file_name": "movie_proc", "target": df_movie},
         {"file_name": "movie", "target": movie_source},
         {"file_name": "rating", "target": rating_source},
-        {"file_name": "tag", "target": df_tags_general},
+        {"file_name": "tag", "target": tags},
+        {"file_name": "genres", "target": unique_genres},
         {"file_name": "procesados_movies", "target": tabla_hecho},
         {"file_name": "procesados_ratings", "target": dim_rating},
     ]
