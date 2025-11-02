@@ -1,3 +1,4 @@
+# main_pipeline.py
 import pandas as pd
 import numpy as np
 from pipeline.data_loader import cargar_datos
@@ -7,9 +8,9 @@ import sys
 
 if __name__ == "__main__":
     # --------------------------------------
-    # Lista de archivo
+    # Lista de archivo (¡AÑADIMOS LINK.CSV!)
     # --------------------------------------
-    files = ["movie.csv", "tag.csv", "rating.csv"]
+    files = ["movie.csv", "tag.csv", "rating.csv", "link.csv"] # <-- ¡NUEVO!
 
     # --------------------------------------
     # Carga de datos CSV
@@ -27,26 +28,38 @@ if __name__ == "__main__":
     # --------------------------------------
     
     # Procesando Movies
-    df_movie, movie_source = procesar_movie(dict_df[files[0]])
-    # print(df_movie.head())
-
+    df_movie, movie_source = procesar_movie(dict_df["movie.csv"])
     # Procesando Rating
-    df_rating_general, dim_rating , rating_source= procesar_ratings(dict_df[files[2]])
+    df_rating_general, dim_rating , rating_source = procesar_ratings(dict_df["rating.csv"])
     # Procesando Tags
-    df_tags_general = procesar_tags(dict_df[files[1]])
+    df_tags_general = procesar_tags(dict_df["tag.csv"])
     
-    # --------------------------------------
-    # Uniones
-    # --------------------------------------
+    # Cargo y limpio links
+    print("-----------------------------------")
+    print("Procesando Data Link")
+    df_links = dict_df["link.csv"]
+    # Limpiar links: solo queremos las columnas clave y eliminar nulos
+    df_links = df_links[['movieId', 'tmdbId']].dropna()
+    df_links['tmdbId'] = df_links['tmdbId'].astype(int)
+
+    
+    # AÑADO LINKS
+    
+    print("-----------------------------------")
+    print("Iniciando fusiones (merge) de tablas...")
     tabla_hecho_parcial = pd.merge(df_movie, df_rating_general, on="movieid", how="left")
-    tabla_hecho = pd.merge(tabla_hecho_parcial, df_tags_general, on="movieid", how="left")
+    tabla_hecho_parcial_2 = pd.merge(tabla_hecho_parcial, df_tags_general, on="movieid", how="left")
+    
+    tabla_hecho = pd.merge(tabla_hecho_parcial_2, df_links, left_on="movieid", right_on="movieId", how="left")
+    
+    if 'movieId' in tabla_hecho.columns:
+        tabla_hecho = tabla_hecho.drop(columns=['movieId'])
     
     # --------------------------------------
     # Originales Limpios
     # --------------------------------------
     
     archivos = [
-        # {"file_name": "movie_proc", "target": df_movie},
         {"file_name": "movie", "target": movie_source},
         {"file_name": "rating", "target": rating_source},
         {"file_name": "tag", "target": df_tags_general},
@@ -55,8 +68,6 @@ if __name__ == "__main__":
     ]
     
     for file in archivos:
-        print(f"Guardando {file["file_name"]}")
-        file["target"].head()
-        guardar_informacion(f"{file['file_name']}.csv",file["target"])
-    
-    
+        print(f"Guardando {file['file_name']}")
+        # file["target"].head() # Comentado para evitar prints largos
+        guardar_informacion(f"{file['file_name']}.csv", file["target"])
