@@ -28,9 +28,27 @@ def procesar_movie(movie_source):
     columnas_limpias = genres_dummies.columns.str.replace(' ', '_')# Reemplaza espacios en blanco por _
     columnas_limpias = columnas_limpias.str.replace(r'[^a-zA-Z0-9_]', '', regex=True) # Reemplaza caracteres especiales
     genres_dummies.columns = columnas_limpias #nombra nuevas columnas limpias
-    movie = pd.concat([movie, genres_dummies], axis=1) #une dataframes genres a df movie
+    movie = pd.concat([movie, genres_dummies], axis=1)
+    
+    
+    print("Procesando Data Movie - Obteniendo un arreglo de 'genres'")
+    movies_dos = movie_source.copy()
+    genres = movies_dos['genres'].str.split(pat='|', expand=True).fillna("")
+    unique_genres = set() 
+    for index, row in genres.iterrows():
+        for genre in row:
+            if genre != '':
+                unique_genres.add(genre)
+                
+    unique_genres_list = list(unique_genres)
+    if '(no genres listed)' in unique_genres_list:
+        unique_genres_list.remove('(no genres listed)')
+    
+    unique_genres = pd.DataFrame({"genre": unique_genres_list})
+    unique_genres.reset_index(inplace=False)
+    
 
-    return movie, movie_source
+    return movie, movie_source, unique_genres
     
 
 def procesar_ratings(rating_source):
@@ -197,4 +215,4 @@ def procesar_tags(tags_df):
     # # Convertir la Serie a DataFrame y resetear el índice para que movieid sea una columna
     tags_agg_df = tags_agg.to_frame().reset_index()
 
-    return tags_agg_df
+    return tags_agg_df, tags_df

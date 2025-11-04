@@ -77,7 +77,8 @@ if __name__ == "__main__":
     archivos = [
         {"file_name": "movie", "target": movie_source},
         {"file_name": "rating", "target": rating_source},
-        {"file_name": "tag", "target": df_tags_general},
+        {"file_name": "tag", "target": tags},
+        {"file_name": "genres", "target": unique_genres},
         {"file_name": "procesados_movies", "target": tabla_hecho},
         {"file_name": "procesados_ratings", "target": dim_rating},
     ]
