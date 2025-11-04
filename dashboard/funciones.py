@@ -20,7 +20,7 @@ def load_data(file_path):
     """
     try:
         df = pd.read_csv(PROCESSED_FILE, encoding='latin1')
-        df['tmdbId'] = pd.to_numeric(df['tmdbId'], errors='coerce')
+        df['tmdbid'] = pd.to_numeric(df['tmdbid'], errors='coerce')
         return df
     except FileNotFoundError:
         st.error(f"Error: No se encontró el archivo {PROCESSED_FILE}")
@@ -34,7 +34,7 @@ def get_dynamic_columns(df):
     y las de año (Pivot) del DataFrame.
     """
     # Define las columnas base que no son ni géneros ni años.
-    base_cols = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbId']
+    base_cols = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
     # Identifica las columnas de año (numéricas de 4 dígitos).
     year_cols = [col for col in df.columns if col.isdigit() and len(col) == 4]
     # Identifica las columnas de género (las restantes).

@@ -47,7 +47,13 @@ def procesar_movie(movie_source):
     unique_genres = pd.DataFrame({"genre": unique_genres_list})
     unique_genres.reset_index(inplace=False)
     
-
+    # ------------------------------
+    # Forzar que 'movieid' sea numérico y luego entero
+    print("Procesando Data Movie - Limpiando IDs")
+    movie['movieid'] = pd.to_numeric(movie['movieid'], errors='coerce')
+    movie = movie.dropna(subset=['movieid']) # Eliminar películas con ID malo
+    movie['movieid'] = movie['movieid'].astype(int)
+    
     return movie, movie_source, unique_genres
     
 
@@ -216,3 +222,24 @@ def procesar_tags(tags_df):
     tags_agg_df = tags_agg.to_frame().reset_index()
 
     return tags_agg_df, tags_df
+
+
+def procesar_link(df_links):
+    # Limpiar y forzar tipos en df_links
+    print("-----------------------------------")
+    print("Procesando Data Link")
+    # Establecer campos en minusculas y sin espacios en blanco
+    df_links.columns = df_links.columns.str.lower() # en minuscular
+    df_links.columns = df_links.columns.str.strip() # quitar espacios en blanco
+
+    df_links = df_links[['movieid', 'tmdbid']].dropna()
+    
+    # cambio a que 'movieid' y 'tmdbid' sean numéricos y luego enteros
+    df_links['movieid'] = pd.to_numeric(df_links['movieid'], errors='coerce')
+    df_links['tmdbid'] = pd.to_numeric(df_links['tmdbid'], errors='coerce')
+    df_links = df_links.dropna(subset=['movieid', 'tmdbid'])
+    df_links['movieid'] = df_links['movieid'].astype(int)
+    df_links['tmdbid'] = df_links['tmdbid'].astype(int)
+    
+    print(df_links)
+    return df_links

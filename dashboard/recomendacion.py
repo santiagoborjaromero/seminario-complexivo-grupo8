@@ -32,7 +32,7 @@ DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
 #     """
 #     try:
 #         df = pd.read_csv(file_path, encoding='latin1')
-#         df['tmdbId'] = pd.to_numeric(df['tmdbId'], errors='coerce')
+#         df['tmdbid'] = pd.to_numeric(df['tmdbid'], errors='coerce')
 #         return df
 #     except FileNotFoundError:
 #         st.error(f"Error: No se encontró el archivo 'procesados_movies.csv' en {file_path}")
@@ -46,7 +46,7 @@ DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
 #     y las de año (Pivot) del DataFrame.
 #     """
 #     # Define las columnas base que no son ni géneros ni años.
-#     base_cols = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbId']
+#     base_cols = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
 #     # Identifica las columnas de año (numéricas de 4 dígitos).
 #     year_cols = [col for col in df.columns if col.isdigit() and len(col) == 4]
 #     # Identifica las columnas de género (las restantes).
@@ -59,7 +59,7 @@ def get_poster_url(tmdb_id):
     Llama a la API de TMDB para obtener la URL del póster.
     Usa caché para evitar llamadas duplicadas a la API.
     """
-    # Si el tmdbId es nulo (NaN), devuelve el póster por defecto.
+    # Si el tmdbid es nulo (NaN), devuelve el póster por defecto.
     if pd.isna(tmdb_id):
         return DEFAULT_POSTER
         
@@ -152,7 +152,7 @@ def main():
         num_cols = 5
         cols = st.columns(num_cols)
         for i, row in enumerate(df_paginado.itertuples()):
-            poster_url = get_poster_url(row.tmdbId)
+            poster_url = get_poster_url(row.tmdbid)
             with cols[i % num_cols]:
                 st.image(poster_url, width='stretch', caption=f"{row.rating_promedio:.1f} ⭐ ({row.rating_conteo:,} votos)")
                 
