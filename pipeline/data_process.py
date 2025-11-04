@@ -241,5 +241,4 @@ def procesar_link(df_links):
     df_links['movieid'] = df_links['movieid'].astype(int)
     df_links['tmdbid'] = df_links['tmdbid'].astype(int)
     
-    print(df_links)
     return df_links
