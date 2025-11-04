@@ -55,9 +55,9 @@ if __name__ == "__main__":
     print("Merge - Movie + Rating + Tags + Links")
     tabla_hecho = pd.merge(tabla_hecho_parcial_2, df_links, left_on="movieid", right_on="movieid", how="left")
     
-    # Limpia columna duplicada de movieid que viene de df_links
-    if 'movieid' in tabla_hecho.columns:
-        tabla_hecho = tabla_hecho.drop(columns=['movieid'])
+    # # Limpia columna duplicada de movieid que viene de df_links
+    # if 'movieid' in tabla_hecho.columns:
+    #     tabla_hecho = tabla_hecho.drop(columns=['movieid'])
     
     # --------------------------------------
     # Guardado de Archivos
