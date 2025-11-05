@@ -28,22 +28,16 @@ def cargar_datos(files):
             print(f"Error {err}")
             return None
     return df
-# # ----------------------------------------------------------------------------------    
-# # ¿Este archivo se esta ejecutando desde el usuario o esta importado por otro script?
-# # ----------------------------------------------------------------------------------    
 
-# if __name__ == "__main__":
-#     #Indica donde está el script actual 
-#     print(f"Ejecutando script desde : {os.path.abspath(__file__)}")
-    
-#     #Llamar a la funcion de arriba para cargar el csv
-#     dataframe_juegos = cargar_datos(DATA_PATH)
-    
-#     if dataframe_juegos is not None:
-#         print(f"\n--- Primeras 5 filas ---")
-#         print(dataframe_juegos.head())  # IMprimer 5 filas
-        
-#         print("\n--- Informacion del data frame ---")
-#         dataframe_juegos.info(show_counts=True) # ShowCounts -> permite si el archivo es muy grande ayuda a obtener data 
 
-        
+
+def load_data(file_path):
+    BASE_DIR = os.getcwd() 
+    DATA_PROCESS_DIR = os.path.join(BASE_DIR, 'data', 'process')
+    PROCESSED_FILE = os.path.join(DATA_PROCESS_DIR, file_path)
+    try:
+        df = pd.read_csv(PROCESSED_FILE, encoding='latin1')
+        return df
+    except FileNotFoundError:
+        print(f"Error: No se encontró el archivo {PROCESSED_FILE}")
+        return None

@@ -30,7 +30,6 @@ def procesar_movie(movie_source):
     genres_dummies.columns = columnas_limpias #nombra nuevas columnas limpias
     movie = pd.concat([movie, genres_dummies], axis=1)
     
-    
     print("Procesando Data Movie - Obteniendo un arreglo de 'genres'")
     movies_dos = movie_source.copy()
     genres = movies_dos['genres'].str.split(pat='|', expand=True).fillna("")
@@ -55,7 +54,7 @@ def procesar_movie(movie_source):
     movie['movieid'] = movie['movieid'].astype(int)
     
     return movie, movie_source, unique_genres
-    
+
 
 def procesar_ratings(rating_source):
     print("-----------------------------------")

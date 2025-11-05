@@ -20,13 +20,12 @@ def load_data(file_path):
     """
     try:
         df = pd.read_csv(PROCESSED_FILE, encoding='latin1')
-        df['tmdbid'] = pd.to_numeric(df['tmdbid'], errors='coerce')
         return df
     except FileNotFoundError:
         st.error(f"Error: No se encontró el archivo {PROCESSED_FILE}")
         st.info("Por favor, ejecuta primero el pipeline .")
         return None
-    
+
 @st.cache_data
 def get_dynamic_columns(df):
     """

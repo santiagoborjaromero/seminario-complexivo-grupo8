@@ -11,7 +11,7 @@ TMDB_API_KEY = "c8f4aca1c7dedc6184e0cf3f98e2665e"
 
 # Configura los metadatos de la página (título, ícono, layout)
 st.set_page_config(
-    page_title="🔥 Dashboard de Recomendación de Películas 🔥",
+    page_title="🔥 Películas mas puntuadas en toda la historia 🔥",
     page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
     layout="wide"
 )
@@ -24,34 +24,6 @@ BASE_DIR = os.getcwd()
 PROCESSED_FILE = 'procesados_movies.csv'
 DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
 
-# @st.cache_data
-# def load_data(file_path):
-#     """
-#     Carga el archivo CSV procesado
-#     Usa @st.cache_data para optimizar el rendimiento y evitar recargas.
-#     """
-#     try:
-#         df = pd.read_csv(file_path, encoding='latin1')
-#         df['tmdbid'] = pd.to_numeric(df['tmdbid'], errors='coerce')
-#         return df
-#     except FileNotFoundError:
-#         st.error(f"Error: No se encontró el archivo 'procesados_movies.csv' en {file_path}")
-#         st.info("Por favor, ejecuta primero el pipeline .")
-#         return None
-
-# @st.cache_data
-# def get_dynamic_columns(df):
-#     """
-#     Extrae las columnas de género (One-Hot) 
-#     y las de año (Pivot) del DataFrame.
-#     """
-#     # Define las columnas base que no son ni géneros ni años.
-#     base_cols = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
-#     # Identifica las columnas de año (numéricas de 4 dígitos).
-#     year_cols = [col for col in df.columns if col.isdigit() and len(col) == 4]
-#     # Identifica las columnas de género (las restantes).
-#     genre_cols = [col for col in df.columns if col not in base_cols and col not in year_cols]
-#     return genre_cols, year_cols
 
 @st.cache_data
 def get_poster_url(tmdb_id):
@@ -85,7 +57,7 @@ def main():
     genre_columns, year_columns = get_dynamic_columns(df_procesado)
 
     #  Crea el panel lateral para los filtros.
-    st.sidebar.title("🎬 Dashboard de Recomendación de Películas")
+    st.sidebar.title("🎬 Películas")
     st.sidebar.header("Filtros Interactivos")
     selected_genres = st.sidebar.multiselect(
         "Elige los Géneros:", options=sorted(genre_columns), default=[] 
@@ -140,7 +112,8 @@ def main():
 
     #  Lógica de la Pestaña 1: Explorador de Pósteres.
     # with tab_posters:
-    st.subheader(f"Top 20 Películas Filtradas (por {sort_label})")
+    # st.subheader(f"Películas mas puntuadas en toda la historia  (por {sort_label})")
+    st.subheader(f"Películas mas puntuadas ")
     
     if len(df_filtrado) == 0:
         st.warning("No se encontraron películas con los filtros seleccionados.")

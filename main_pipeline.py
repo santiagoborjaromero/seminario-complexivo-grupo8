@@ -67,6 +67,7 @@ if __name__ == "__main__":
         {"file_name": "movie", "target": movie_source},
         {"file_name": "rating", "target": rating_source},
         {"file_name": "tag", "target": tags},
+        {"file_name": "links", "target": df_links},
         {"file_name": "genres", "target": unique_genres},
         {"file_name": "procesados_movies", "target": tabla_hecho},
         {"file_name": "procesados_ratings", "target": dim_rating},
