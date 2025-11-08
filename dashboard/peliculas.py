@@ -24,23 +24,36 @@ API_BASE_URL = "http://localhost:8000"
 def main():
     #  Crea el panel lateral para los filtros.
     st.sidebar.title("🎬 Películas")
-    st.sidebar.header("Filtros Interactivos")
     
-    df_genres = api("/data/genres")
-    if df_genres is None:
-        df_genres = []
+    resp_genres = api("/data/genres")
+    if resp_genres is None:
+        resp_genres = []
+    
+    status = resp_genres.get("status", False)
+    if status == False:
+        st.error("Genres no disponible")
+        return
+    
+    genre_data = json.loads(resp_genres.get("data", False))
+    genre_columns = []
+    for gen in genre_data:
+        print(gen["genre"])
+        genre_columns.append(gen["genre"])
         
+    
     selected_genres = st.sidebar.multiselect(
-        "Elige los Géneros:", options=sorted(df_genres), default=[] 
+        "Elige los Géneros:", options=sorted(genre_columns), default=[] 
     )
     return 
-    # rating_slider = st.sidebar.slider(
-    #     "Filtro por Rating Promedio:", 0.0, 5.0, (0.0, 5.0) # tupla (min, max) para definir un rango
-    # )
-    # min_ratings_limit = int(df_procesado['rating_conteo'].quantile(0.75))
-    # total_ratings_slider = st.sidebar.slider(
-    #     "Filtro por Calificaciones:", 0, int(df_procesado['rating_conteo'].max()), min_ratings_limit
-    # ) 
+    rating_slider = st.sidebar.slider(
+        "Filtro por Rating Promedio:", 0.0, 5.0, (0.0, 5.0) # tupla (min, max) para definir un rango
+    )
+    return
+    
+    min_ratings_limit = int(df_procesado['rating_conteo'].quantile(0.75))
+    total_ratings_slider = st.sidebar.slider(
+        "Filtro por Calificaciones:", 0, int(df_procesado['rating_conteo'].max()), min_ratings_limit
+    ) 
 
     # Agrega una sección para seleccionar el orden de los resultados.
     st.sidebar.markdown("---")
