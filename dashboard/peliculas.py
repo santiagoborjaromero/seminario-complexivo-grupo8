@@ -37,55 +37,45 @@ def main():
     genre_data = json.loads(resp_genres.get("data", False))
     genre_columns = []
     for gen in genre_data:
-        print(gen["genre"])
         genre_columns.append(gen["genre"])
         
-    
     selected_genres = st.sidebar.multiselect(
         "Elige los Géneros:", options=sorted(genre_columns), default=[] 
     )
-    return 
     rating_slider = st.sidebar.slider(
         "Filtro por Rating Promedio:", 0.0, 5.0, (0.0, 5.0) # tupla (min, max) para definir un rango
     )
-    return
     
-    min_ratings_limit = int(df_procesado['rating_conteo'].quantile(0.75))
-    total_ratings_slider = st.sidebar.slider(
-        "Filtro por Calificaciones:", 0, int(df_procesado['rating_conteo'].max()), min_ratings_limit
-    ) 
+    # min_ratings_limit = int(df_procesado['rating_conteo'].quantile(0.75))
+    # total_ratings_slider = st.sidebar.slider(
+    #     "Filtro por Calificaciones:", 0, int(df_procesado['rating_conteo'].max()), min_ratings_limit
+    # ) 
 
     # Agrega una sección para seleccionar el orden de los resultados.
     st.sidebar.markdown("---")
-    st.sidebar.header("Ordenar Resultados Por:")
     sort_by = st.sidebar.radio(
         "Elegir orden:",
         ["Puntaje (Mejor Calificadas)", "Popularidad (Más Votadas)"],
         index=0 # Por defecto, ordena por Puntaje
     )
         
-        
-    
     df = api("/data/clean_movies")
-    if df is None:
-        return
-    # print(df_procesado)
-    status = df.get("status", False)
+    status = resp_genres.get("status", False)
     if status == False:
+        st.error("La data de peliculas está vacia")
         message = df.get("message", False)
-        st.error(message)
+        st.error(f"{message}")
         return
-    else:
-        genre_columns = ""
-        # data = json.loads(df.get("data", False))
-        # print(data)
-        # col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
-        # df_procesado = pd.DataFrame(data, columns=col_categoricas)
-        # df_procesado.reset_index(level=0, inplace=True)
 
-        # genre_columns, year_columns = get_dynamic_columns(df_procesado)
-        # print(genre_columns)
+    data = json.loads(df.get("data", False))
+    # print(data)
+    # col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
+    # df_procesado = pd.DataFrame(data, columns=col_categoricas)
+    # df_procesado.reset_index(level=0, inplace=True)
 
+    # genre_columns, year_columns = get_dynamic_columns(df_procesado)
+    # print(genre_columns)
+    return 
         
 
         #  Aplica los filtros de la barra lateral al DataFrame.
