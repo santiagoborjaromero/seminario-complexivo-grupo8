@@ -5,7 +5,7 @@ import plotly.express as px
 from dashboard.funciones import load_data, get_dynamic_columns
 
 
-PROCESSED_FILE = 'procesados_movies.csv'
+PROCESSED_FILE = 'movie_perfil_contenido.csv'
 
 df_procesado = load_data(PROCESSED_FILE)
 if df_procesado is None:
