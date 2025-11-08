@@ -64,7 +64,15 @@ def get_poster_url(tmdb_id, DEFAULT_POSTER):
     
 def api(url_path):
     try:
-        response = requests.get(f"{API_BASE_URL}{url_path}")
+        response = requests.get(f"{API_BASE_URL}{url_path}", headers={"Content-Type": "application/json"})
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        return f"Error al cargar filtros desde la API: {e}"
+    
+def apiPost(url_path, data):
+    try:
+        response = requests.post(f"{API_BASE_URL}{url_path}", json=data, headers={"Content-Type": "application/json"})
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:

@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # from api.routers.pipeline import pipeline_routes
 from api.routers.recomendation import recommed_routes
 from api.routers.data import data_routes
+from api.routers.auth import api_routes
 
 app = FastAPI(
     debug=True,
@@ -35,5 +36,6 @@ app.add_middleware(
 )
 
 # app.include_router(pipeline_routes)
+app.include_router(api_routes)
 app.include_router(data_routes)
 app.include_router(recommed_routes)
