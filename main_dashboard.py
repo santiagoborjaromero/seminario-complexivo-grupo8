@@ -1,9 +1,4 @@
 import streamlit as st
-import pandas as pd
-import plotly.express as px
-import os
-import requests
-import math 
 
 st.set_page_config(
     page_title="🔥 Mis Películas 🔥",

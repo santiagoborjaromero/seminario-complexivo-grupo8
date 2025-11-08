@@ -53,24 +53,30 @@ if __name__ == "__main__":
     print("Merge - Movie + Rating + Tags")
     tabla_hecho_parcial_2 = pd.merge(tabla_hecho_parcial, df_tags_general, on="movieid", how="left")
     print("Merge - Movie + Rating + Tags + Links")
-    tabla_hecho = pd.merge(tabla_hecho_parcial_2, df_links, left_on="movieid", right_on="movieid", how="left")
+    perfil_contenido = pd.merge(tabla_hecho_parcial_2, df_links, left_on="movieid", right_on="movieid", how="left")
     
     # # Limpia columna duplicada de movieid que viene de df_links
     # if 'movieid' in tabla_hecho.columns:
     #     tabla_hecho = tabla_hecho.drop(columns=['movieid'])
     
     # --------------------------------------
+    # Filtrado del ultimo año de ratings y tags
+    # --------------------------------------
+    YEAR_FILTER = rating_source["timestamp"].dt.year.max()
+    ratings = rating_source[rating_source["timestamp"].dt.year >= YEAR_FILTER]
+    tag = tags[tags["timestamp"].dt.year >= YEAR_FILTER]
+    # --------------------------------------
     # Guardado de Archivos
     # --------------------------------------
     
     archivos = [
-        {"file_name": "movie", "target": movie_source},
-        {"file_name": "rating", "target": rating_source},
-        {"file_name": "tag", "target": tags},
-        {"file_name": "links", "target": df_links},
+        # {"file_name": "movie", "target": movie_source},
+        {"file_name": "clean_rating", "target": ratings},
+        # {"file_name": "tag", "target": tag},
+        {"file_name": "clean_links", "target": df_links},
         {"file_name": "genres", "target": unique_genres},
-        {"file_name": "procesados_movies", "target": tabla_hecho},
-        {"file_name": "procesados_ratings", "target": dim_rating},
+        {"file_name": "movie_perfil_contenido", "target": perfil_contenido},
+        # {"file_name": "procesados_ratings", "target": dim_rating},
     ]
     
     for file in archivos:

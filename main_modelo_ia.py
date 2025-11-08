@@ -7,7 +7,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from pipeline.data_loader import load_data
 from pipeline.data_saving import guardar_informacion
 
-RATINGS = "rating.csv"
 # USERID = 31
 USERID = 284
 GENRE = "Adventure"
@@ -60,14 +59,14 @@ def recommend_by_genre(target_genre, movies_df, genres_list, top_n=10):
     # En teoría, solo las de ese género tendrán similitud > 0
     recommended = movies_df_temp[movies_df_temp[target_genre] == 1]
     # Ordenar por similitud (descendente) y luego por rating_promedio (para priorizar las mejor valoradas)
-    # recommended = recommended.sort_values(
-    #     by=['similarity', 'rating_promedio', 'rating_conteo'],
-    #     ascending=[False, False, False]
-    # ).head(top_n)
     recommended = recommended.sort_values(
-        by=['similarity'],
-        ascending=[False]
+        by=['similarity', 'rating_promedio', 'rating_conteo'],
+        ascending=[False, False, False]
     ).head(top_n)
+    # recommended = recommended.sort_values(
+    #     by=['similarity'],
+    #     ascending=[False]
+    # ).head(top_n)
     
     return recommended
 
@@ -82,12 +81,12 @@ if __name__ == "__main__":
     print("Rating - Filtrando data del ultimo año")
     ratings = ratings_original[ratings_original["timestamp"].dt.year >= YEAR_FILTER]
     
-    print("Tags - Cargando data ")
-    tags = load_data("tag.csv")
-    print("Tags - Cambiando timestamp de object a datatime")
-    tags["timestamp"] = pd.to_datetime(tags["timestamp"])
-    print("Tags - Filtrando data del ultimo año")
-    tags = tags[tags["timestamp"].dt.year >= YEAR_FILTER]
+    # print("Tags - Cargando data ")
+    # tags = load_data("tag.csv")
+    # print("Tags - Cambiando timestamp de object a datatime")
+    # tags["timestamp"] = pd.to_datetime(tags["timestamp"])
+    # print("Tags - Filtrando data del ultimo año")
+    # tags = tags[tags["timestamp"].dt.year >= YEAR_FILTER]
     
     print("Movies - Cargando data ")
     movies_original = load_data("movie.csv")

@@ -8,8 +8,11 @@ import math
 # Define las rutas a los archivos de datos procesados
 #---------------------------------------------------------
 
+API_BASE_URL = "http://localhost:8000"
 BASE_DIR = os.getcwd() 
 DATA_PROCESS_DIR = os.path.join(BASE_DIR, 'data', 'process')
+TMDB_API_KEY = "c8f4aca1c7dedc6184e0cf3f98e2665e"
+
 
 @st.cache_data
 def load_data(file_path):
@@ -19,7 +22,7 @@ def load_data(file_path):
     Usa @st.cache_data para optimizar el rendimiento y evitar recargas.
     """
     try:
-        df = pd.read_csv(PROCESSED_FILE, encoding='latin1')
+        df = pd.read_csv(PROCESSED_FILE, encoding='utf8')
         return df
     except FileNotFoundError:
         st.error(f"Error: No se encontró el archivo {PROCESSED_FILE}")
@@ -39,3 +42,30 @@ def get_dynamic_columns(df):
     # Identifica las columnas de género (las restantes).
     genre_cols = [col for col in df.columns if col not in base_cols and col not in year_cols]
     return genre_cols, year_cols
+
+
+def get_poster_url(tmdb_id, DEFAULT_POSTER):
+    # Si el tmdbid es nulo (NaN), devuelve el póster por defecto.
+    if pd.isna(tmdb_id):
+        return DEFAULT_POSTER
+        
+    url = f"https://api.themoviedb.org/3/movie/{int(tmdb_id)}?api_key={TMDB_API_KEY}"
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        if data.get("poster_path"):
+            return f"https://image.tmdb.org/t/p/w500{data['poster_path']}"
+        else:
+            return DEFAULT_POSTER
+    except requests.exceptions.RequestException:
+        return DEFAULT_POSTER
+    
+    
+def api(url_path):
+    try:
+        response = requests.get(f"{API_BASE_URL}{url_path}")
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        return f"Error al cargar filtros desde la API: {e}"
