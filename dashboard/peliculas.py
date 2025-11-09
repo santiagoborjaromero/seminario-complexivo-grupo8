@@ -4,7 +4,7 @@ import plotly.express as px
 import os
 import requests
 import json
-
+import time
 from dashboard.funciones import load_data, get_dynamic_columns, get_poster_url, api, apiPost
 
 # Configura los metadatos de la página (título, ícono, layout)
@@ -16,10 +16,8 @@ st.set_page_config(
 
 # Define las rutas a los archivos de datos procesados
 BASE_DIR = os.getcwd() 
-# PROCESSED_FILE = os.path.join(BASE_DIR, 'data', 'process', 'procesados_movies.csv')
 DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
 API_BASE_URL = "http://localhost:8000"
-ITEMS_PER_PAGE = 10
 
 #  Función principal que ejecuta  Streamlit.
 def main():
@@ -46,6 +44,10 @@ def main():
     # --------------------------------------
     # Objetos
     # --------------------------------------
+    movie_title = st.sidebar.text_input(
+        "Búsqueda por titulo"
+    )
+    
     selected_genres = st.sidebar.multiselect(
         "Elige los Géneros:", options=sorted(genre_columns), default=[] 
     )
@@ -73,17 +75,19 @@ def main():
         "items_per_page": items_per_page,
         "count_slider_min": count_slider[0],
         "count_slider_max": count_slider[1],
+        "movie_title": movie_title
     }
     
     print(parameters)
     # --------------------------------------
     # Traer el listado de Movies con los filtros seleccionados 
     # --------------------------------------
+    # with st.spinner("Cargando películas ..."):
+    #     time.sleep(2)
     df = apiPost("/data/clean_movies", parameters)
-    
     status = df.get("status", False)
     if status == False:
-        st.error("La lista de peliculas está vacia")
+        st.warning("La lista de películas está vacia")
         message = df.get("message", False)
         st.error(f"{message}")
         return

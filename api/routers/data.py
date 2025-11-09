@@ -51,6 +51,7 @@ def movies(form_data: MovieFormData):
         count_slider_min = fdata["count_slider_min"]
         count_slider_max = fdata["count_slider_max"]
         items_per_page = fdata["items_per_page"]
+        movie_title = fdata["movie_title"]
         
         #Cargand data
         data = load_data("movie_perfil_contenido.csv")
@@ -60,31 +61,37 @@ def movies(form_data: MovieFormData):
         ddata = pd.DataFrame(data, columns=col_categoricas)
         ddata.reset_index(level=0, inplace=True)
         # ddata.reset_index()
+        print(movie_title)
         print(ddata)
         
-        #Filtrado por genero si existe
-        if len(genres) > 0:
-            print(genres)
-            filtro = ddata['genres'].str.split("|").apply(lambda x: any(np.isin(genres, x)))
-            ddata = ddata[filtro]
-        
-        # Filtrado por rating en su rango si el maximo es mayor que 0
-        if (rating_max > 0):
-            print(rating_min, rating_max)
-            filtro = (ddata["rating_promedio"] >= rating_min) & (ddata["rating_promedio"] <= rating_max)
-            ddata = ddata[filtro]
+        if not movie_title:
+            #Filtrado por genero si existe
+            if len(genres) > 0:
+                print(genres)
+                filtro = ddata['genres'].str.split("|").apply(lambda x: any(np.isin(genres, x)))
+                ddata = ddata[filtro]
+            
+            # Filtrado por rating en su rango si el maximo es mayor que 0
+            if (rating_max > 0):
+                print(rating_min, rating_max)
+                filtro = (ddata["rating_promedio"] >= rating_min) & (ddata["rating_promedio"] <= rating_max)
+                ddata = ddata[filtro]
 
-        if (count_slider_max > 0):
-            print(count_slider_min, count_slider_max)
-            filtro = (ddata["rating_conteo"] >= count_slider_min) & (ddata["rating_conteo"] <= count_slider_max)
+            if (count_slider_max > 0):
+                print(count_slider_min, count_slider_max)
+                filtro = (ddata["rating_conteo"] >= count_slider_min) & (ddata["rating_conteo"] <= count_slider_max)
+                ddata = ddata[filtro]
+        else:
+            print("Titulo:", movie_title)
+            filtro = ddata["title"].str.contains(movie_title, case=False)
             ddata = ddata[filtro]
-        
+            
         # Ordenado
         if orderby == "Rating":
             ddata = ddata.sort_values(by="rating_promedio", ascending=False)
         elif orderby == "Popularidad":
             ddata = ddata.sort_values(by="rating_conteo", ascending=False)
-        
+            
         # Limite   
         ddata = ddata.iloc[0:items_per_page]
         print(ddata)
