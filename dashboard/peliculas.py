@@ -24,7 +24,7 @@ ITEMS_PER_PAGE = 10
 #  Función principal que ejecuta  Streamlit.
 def main():
     #  Crea el panel lateral para los filtros.
-    st.sidebar.title("🎬 Películas")
+    st.sidebar.title("Nuestras Películas 🎬")
     
     # --------------------------------------
     # Genres, consulta 
@@ -50,10 +50,10 @@ def main():
         "Elige los Géneros:", options=sorted(genre_columns), default=[] 
     )
     rating_slider = st.sidebar.slider(
-        "Rating:", 0.0, 5.0, (0.0, 5.0) # tupla (min, max) para definir un rango
+        "Rating: ⭐", 0.0, 5.0, (0.0, 5.0) # tupla (min, max) para definir un rango
     )
     count_slider = st.sidebar.slider(
-        "Popularidad en votos:", 0.0, 100000.0, (30000.0, 68000.0) # tupla (min, max) para definir un rango
+        "Popularidad en votos:", 0.0, 68000.0, (30000.0, 68000.0) # tupla (min, max) para definir un rango
     )
     items_per_page = st.sidebar.selectbox(
         "Numero de Peliculas", ["10","15","20","25","30","50"]
