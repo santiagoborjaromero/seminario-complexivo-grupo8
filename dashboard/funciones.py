@@ -62,9 +62,9 @@ def get_poster_url(tmdb_id, DEFAULT_POSTER):
         return DEFAULT_POSTER
     
     
-def api(url_path):
+def api(url_path,data={}):
     try:
-        response = requests.get(f"{API_BASE_URL}{url_path}", headers={"Content-Type": "application/json"})
+        response = requests.get(f"{API_BASE_URL}{url_path}", json=data, headers={"Content-Type": "application/json"})
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
