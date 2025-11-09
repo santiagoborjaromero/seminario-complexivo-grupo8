@@ -53,7 +53,7 @@ def main():
         "Rating:", 0.0, 5.0, (0.0, 5.0) # tupla (min, max) para definir un rango
     )
     count_slider = st.sidebar.slider(
-        "Popularidad en votos:", 0.0, 100000.0, (30000.0, 100000.0) # tupla (min, max) para definir un rango
+        "Popularidad en votos:", 0.0, 100000.0, (30000.0, 68000.0) # tupla (min, max) para definir un rango
     )
     items_per_page = st.sidebar.selectbox(
         "Numero de Peliculas", ["10","15","20","25","30","50"]
