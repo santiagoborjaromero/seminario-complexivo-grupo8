@@ -42,45 +42,47 @@ def main():
     
     # Selección de KPI's de Dama    
     selected_dama = st.sidebar.selectbox(
-    "Elige el KPI:",
-    options=["-- Selecciona --"] + sorted(dama_columns)
+        "Elige el KPI:",
+        # options=["-- Selecciona --"] + sorted(dama_columns)
+        options=sorted(dama_columns)
     )
     
-    #Carga la data de movie_kpis
-    resp_movie_dama = api("/data/movie_dama")
-    if resp_movie_dama is None:
-        resp_movie_dama = []
-    status = resp_movie_dama.get("status", False)
-    if status == False:
-        st.error("Movie KPI's no disponible")
-        return
-    movie_dama_data = json.loads(resp_movie_dama.get("data", False))
-    df_movie_dama = pd.DataFrame(movie_dama_data)
-    st.dataframe(df_movie_dama.head(15))
-    
-    #Carga la data de rating_kpis
-    resp_rating_dama = api("/data/rating_dama")
-    if resp_rating_dama is None:
-        resp_rating_dama = []
-    status = resp_rating_dama.get("status", False)
-    if status == False:
-        st.error("Rating KPI's no disponible")
-        return
-    rating_dama_data = json.loads(resp_rating_dama.get("data", False))
-    df_rating_dama = pd.DataFrame(rating_dama_data)
-    st.dataframe(df_rating_dama.head(15))
-    
-    #Carga la data de tag_kpis
-    resp_tag_dama = api("/data/tag_dama")
-    if resp_tag_dama is None:
-        resp_tag_dama = []
-    status = resp_tag_dama.get("status", False)
-    if status == False:
-        st.error("Tag KPI's no disponible")
-        return
-    tag_dama_data = json.loads(resp_tag_dama.get("data", False))
-    df_tag_dama = pd.DataFrame(tag_dama_data)
-    st.dataframe(df_tag_dama.head(15))
+    if selected_dama == "Movie":
+        #Carga la data de movie_kpis
+        resp_movie_dama = api("/data/movie_dama")
+        if resp_movie_dama is None:
+            resp_movie_dama = []
+        status = resp_movie_dama.get("status", False)
+        if status == False:
+            st.error("Movie KPI's no disponible")
+            return
+        movie_dama_data = json.loads(resp_movie_dama.get("data", False))
+        df_movie_dama = pd.DataFrame(movie_dama_data)
+        st.dataframe(df_movie_dama.head(15))
+    elif selected_dama == "Rating":
+        #Carga la data de rating_kpis
+        resp_rating_dama = api("/data/rating_dama")
+        if resp_rating_dama is None:
+            resp_rating_dama = []
+        status = resp_rating_dama.get("status", False)
+        if status == False:
+            st.error("Rating KPI's no disponible")
+            return
+        rating_dama_data = json.loads(resp_rating_dama.get("data", False))
+        df_rating_dama = pd.DataFrame(rating_dama_data)
+        st.dataframe(df_rating_dama.head(15))
+    elif selected_dama == "Tag":
+        #Carga la data de tag_kpis
+        resp_tag_dama = api("/data/tag_dama")
+        if resp_tag_dama is None:
+            resp_tag_dama = []
+        status = resp_tag_dama.get("status", False)
+        if status == False:
+            st.error("Tag KPI's no disponible")
+            return
+        tag_dama_data = json.loads(resp_tag_dama.get("data", False))
+        df_tag_dama = pd.DataFrame(tag_dama_data)
+        st.dataframe(df_tag_dama.head(15))
     
     
 if __name__ == "__main__":
