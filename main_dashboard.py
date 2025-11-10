@@ -25,6 +25,7 @@ if __name__ == "__main__":
         pages.append(st.Page("dashboard/recomendadas_parati.py", title="Recomendadas para Ti", icon=":material/star_outline:"))
         pages.append(st.Page("dashboard/recomendadas_genero.py", title="Top por género", icon=":material/star_outline:"))
         pages.append(st.Page("dashboard/analisis.py", title="Análisis de Datos", icon=":material/area_chart:"))
+        pages.append(st.Page("dashboard/dama.py", title="Calidad de Datos", icon=":material/area_chart:"))
         pages.append(st.Page(logout, title="Salir", icon=":material/area_chart:"))
         pg = st.navigation(pages, position="top")
     else:
