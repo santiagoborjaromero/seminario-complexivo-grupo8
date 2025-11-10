@@ -54,4 +54,12 @@ git switch master         #cambia a la rama master
 git pull                  # actualiza cambios
 git branch -d feature/data-loader   # elimina rama que ya se aprobo
 ```
+Para ejecutar Api
+```
+uvicorn main_api:app --reload
+```
+Para ejecutar Streamlit
+```
+streamlit run main_dashboard.py
+```
 
