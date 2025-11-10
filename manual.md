@@ -29,7 +29,7 @@ pip install --upgrade pip
 ## Librerias  
 pandas, streamlit, seaborn, fastapi, numpy, matplot.pyplot
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn jupyter
+pip install pandas numpy matplotlib seaborn scikit-learn jupyter pandas streamlit seaborn fastapi numpy matplot.pyplot
 pip install missingno
 pip freeze > requirements.txt
 ```
