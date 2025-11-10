@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import os
-import requests
 import json
-import time
 from dashboard.funciones import load_data, get_dynamic_columns, get_poster_url, api, apiPost
 
 # Configura los metadatos de la página (título, ícono, layout)
@@ -99,14 +97,6 @@ def main():
     df_procesado = pd.DataFrame(df_filtrado, columns=col_categoricas)
     df_procesado.reset_index(level=0, inplace=True)
                 
-    # # Crea las dos pestañas Pósteres y Análisis.
-    # # tab_posters, tab_analisis = st.tabs(["🎬 Explorador de Peliculas", "📊 Análisis de Datos"])
-
-    # #  Lógica de la Pestaña 1: Explorador de Pósteres.
-    # # with tab_posters:
-    # # st.subheader(f"Películas mas puntuadas en toda la historia  (por {sort_label})")
-    # st.subheader(f"Películas mas puntuadas ")
-    
     if len(df_procesado) == 0:
         st.warning("No se encontraron películas con los filtros seleccionados.")
     else:

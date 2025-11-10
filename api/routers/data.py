@@ -54,15 +54,15 @@ def movies(form_data: MovieFormData):
         movie_title = fdata["movie_title"]
         
         #Cargand data
-        data = load_data("movie_perfil_contenido.csv")
+        ddata = load_data("movie_perfil_contenido.csv")
         
         # Seleccionando las columnas necesarias
-        col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
-        ddata = pd.DataFrame(data, columns=col_categoricas)
-        ddata.reset_index(level=0, inplace=True)
-        # ddata.reset_index()
-        print(movie_title)
-        print(ddata)
+        # col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
+        # ddata = pd.DataFrame(data, columns=col_categoricas)
+        # ddata.reset_index(level=0, inplace=True)
+        # # ddata.reset_index()
+        # print(movie_title)
+        # print(ddata)
         
         if not movie_title:
             #Filtrado por genero si existe
@@ -91,15 +91,20 @@ def movies(form_data: MovieFormData):
             ddata = ddata.sort_values(by="rating_promedio", ascending=False)
         elif orderby == "Popularidad":
             ddata = ddata.sort_values(by="rating_conteo", ascending=False)
-            
+        
+        # Columnas 
+        # columnas = ddata.columns
+        columns = ddata.columns
+        col_str = ",".join(columns)
+        
         # Limite   
         ddata = ddata.iloc[0:items_per_page]
-        print(ddata)
+        # print(ddata)
         
         ddata = ddata.to_json(orient='records')
         # data = duser.to_json(orient='records', indent=4)
         status = True
-        message = ""
+        message = col_str
         data = ddata
     except Exception as err:
         status = False

@@ -1,25 +1,41 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
+import json
 
-from dashboard.funciones import load_data, get_dynamic_columns
+from dashboard.funciones import load_data, get_dynamic_columns, get_poster_url, api, apiPost
+
+# Define las rutas a los archivos de datos procesados
+BASE_DIR = os.getcwd() 
+DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
+API_BASE_URL = "http://localhost:8000"
 
 
-PROCESSED_FILE = 'movie_perfil_contenido.csv'
-
-df_procesado = load_data(PROCESSED_FILE)
-if df_procesado is None:
-    exit(0)
-
-genre_columns, year_columns = get_dynamic_columns(df_procesado)
-df_filtrado = df_procesado.copy()
-
-if df_filtrado.empty:
-    st.warning("No hay datos para analizar con los filtros seleccionados.")
-else:
+def main():
+    # --------------------------------------
+    # Genres, consulta 
+    # --------------------------------------
+    resp_genres = api("/data/genres")
+    if resp_genres is None:
+        resp_genres = []
+    
+    status = resp_genres.get("status", False)
+    if status == False:
+        st.error("Genres no disponible")
+        return
+    
+    genre_data = json.loads(resp_genres.get("data", False))
+    genre_columns = []
+    for gen in genre_data:
+        genre_columns.append(gen["genre"])
+        
     #  Gráficos de Popularidad.
     st.markdown("#### Visualizaciones de Popularidad")
     
+    # --------------------------------------
+    # Objetos
+    # --------------------------------------
     
     #  Crea el panel lateral para los filtros.
     st.sidebar.title("Análisis de Datos")
@@ -27,48 +43,49 @@ else:
     selected_genres = st.sidebar.multiselect(
         "Elige los Géneros:", options=sorted(genre_columns), default=[] 
     )
-    # rating_slider = st.sidebar.slider(
-    #     "Filtro por Rating Promedio:", 0.0, 5.0, (0.0, 5.0) # tupla (min, max) para definir un rango
-    # )
-    min_ratings_limit = int(df_procesado['rating_conteo'].quantile(0.75))
-    total_ratings_slider = st.sidebar.slider(
-        "Filtro por Calificaciones:", 0, int(df_procesado['rating_conteo'].max()), min_ratings_limit
-    ) 
-
+    count_slider = st.sidebar.slider(
+        "Popularidad en votos:", 0.0, 68000.0, (30000.0, 68000.0) # tupla (min, max) para definir un rango
+    )
     # Agrega una sección para seleccionar el orden de los resultados.
-    st.sidebar.header("Ordenar Resultados Por:")
     sort_by = st.sidebar.radio(
         "Elegir orden:",
-        ["Puntaje (Mejor Calificadas)", "Popularidad (Más Votadas)"],
+        ["Rating", "Popularidad"],
         index=0 # Por defecto, ordena por Puntaje
     )
+    parameters = {
+        "order_by": sort_by,
+        "genres": selected_genres,
+        "rating_min": 0.0,
+        "rating_max": 5.0,
+        "items_per_page": 68000,
+        "count_slider_min": count_slider[0],
+        "count_slider_max": count_slider[1],
+        "movie_title": ""
+    }
     
-    #  Aplica los filtros de la barra lateral al DataFrame.
-    df_filtrado = df_procesado.copy()
-    df_filtrado = df_filtrado[
-        (df_filtrado['rating_promedio'] >= 1) &
-        (df_filtrado['rating_promedio'] <= 5)
-    ]
-    df_filtrado = df_filtrado[
-        df_filtrado['rating_conteo'] >= total_ratings_slider
-    ]
-    if selected_genres:
-        for genre in selected_genres:
-            df_filtrado = df_filtrado[df_filtrado[genre] == 1]
+    # --------------------------------------
+    # Traer el listado de Movies con los filtros seleccionados 
+    # --------------------------------------
+    df_procesado = apiPost("/data/clean_movies", parameters)
+    status = df_procesado.get("status", False)
+    message = df_procesado.get("message", False)
+    if status == False:
+        st.warning("La lista de películas está vacia")
+        st.error(f"{message}")
+        return
     
-    # Ordena el df_filtrado según la selección de 'sort_by'.
-    if sort_by == "Popularidad (Más Votadas)":
-        df_filtrado = df_filtrado.sort_values(by='rating_conteo', ascending=False)
-        sort_label = "Popularidad"
-    else: # "Puntaje (Mejor Calificadas)"
-        df_filtrado = df_filtrado.sort_values(by='rating_promedio', ascending=False)
-        sort_label = "Puntaje"
-
-        
+    df_procesado = json.loads(df_procesado.get("data", False))
+ 
+    col_categoricas = message.split(",")
+    df_filtrado = pd.DataFrame(df_procesado, columns=col_categoricas)
+    df_filtrado.reset_index(level=0, inplace=True)
+    
+    genre_columns, year_columns = get_dynamic_columns(df_filtrado)
+       
     col_graf1, col_graf2 = st.columns(2)
 
     with col_graf1:
-        st.markdown("Top 10 Películas (por N° de Calificaciones)")
+        # st.markdown("Top 10 Películas (por N° de Calificaciones)")
         # Este gráfico (Top 10) siempre se ordena por 'rating_conteo' x popularidad.
         df_top10_pop = df_filtrado.nlargest(10, 'rating_conteo')
         fig_bar = px.bar(
@@ -79,7 +96,7 @@ else:
         st.plotly_chart(fig_bar, width='stretch')
 
     with col_graf2:
-        st.markdown("Rating Promedio vs. Popularidad")
+        # st.markdown("Rating Promedio vs. Popularidad")
         # Este gráfico de dispersión usa el df_filtrado completo.
         fig_scatter = px.scatter(
             df_filtrado, x='rating_conteo', y='rating_promedio',
@@ -111,3 +128,7 @@ else:
     st.subheader("Datos Filtrados (Detalle)")
     # Esta tabla muestra los datos ordenados según la selección del radio button.
     st.dataframe(df_filtrado, width='stretch')
+    
+    
+if __name__ == "__main__":
+    main()

@@ -18,5 +18,7 @@ else:
     st.sidebar.image(F,f"{current_user["nombre"]}")
 
 st.sidebar.caption(f"Rating Votado {current_user["rating"]:.1f} ⭐ ({current_user["votos"]:,} votos)")
+st.sidebar.caption(f":material/mail: {current_user["email"]}")
+st.sidebar.caption(f":material/explore_nearby: {current_user["provincia"]}")
     
 st.image("images/portada.png", width="stretch")

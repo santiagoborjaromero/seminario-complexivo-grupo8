@@ -21,12 +21,13 @@ def login(dusuario: Auth):
         temp = json.loads(duser.to_json(orient='records'))
         user = {}
         for d in temp:
-            print(d["email"] , usuario["usuario"])
-            if (d["email"]) == usuario["usuario"]:
+            print(f'{d["email"]} | {d["passwd"]} | {usuario["clave"]}')
+            if (d["email"] == usuario["usuario"]) and (str(d["passwd"]) == usuario["clave"]):
                 user = {
                     "userid": d["userid"],
                     "nombre": d["nombre"],
                     "email": d["email"],
+                    "provincia": d["provincia"],
                     "genero": d["genero"],
                     "votos": d["votos"],
                     "rating": d["rating"],
@@ -38,7 +39,7 @@ def login(dusuario: Auth):
         message = ""
         if data == {}:
             status = False
-            message = f"Usuario no encontrado {usuario["usuario"]}"
+            message = f"Usuario no encontrado {usuario["usuario"]} o con credenciales erróneas"
     except Exception as err:
         status = False
         data = []
