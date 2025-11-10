@@ -15,6 +15,10 @@ app = FastAPI(
     openapi_url="/api/v1/",
     openapi_tags=[
         {
+            "name": "Auth",
+            "description": "Procesos de autorización en el sistema",
+        },
+        {
             "name": "General",
             "description": "Data limpia y procesada como insumo de dasboard y para entrenamiento de machine learning",
         },

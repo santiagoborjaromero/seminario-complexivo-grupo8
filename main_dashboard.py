@@ -14,7 +14,6 @@ def logout():
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.user_data = {}
-   
     
 if __name__ == "__main__":
     # st.write(st.session_state)
