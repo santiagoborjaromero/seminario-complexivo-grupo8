@@ -213,3 +213,4 @@ venv
 data/
 *.csv
 *.xls
+bak/
