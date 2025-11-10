@@ -42,7 +42,7 @@ def usuarios():
     tags=[TAG])
 def movies(form_data: MovieFormData):
     try:
-        # Capturando data del filtro
+        # Capturando data que viene del filtro 
         fdata = form_data.model_dump()
         orderby = fdata["order_by"]
         genres = fdata["genres"]
