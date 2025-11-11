@@ -1,13 +1,3 @@
-
-# -*- coding: utf-8 -*-
-"""
-movies_clean_kpis_commented.py
-Limpia movies.csv, calcula KPIs (DAMA) y guarda:
- - Excel: movies_report.xlsx (hojas: KPIs_movies, Clean_movies)
- - CSV:   movies_clean.csv, movies_kpis.csv
-Uso:
-  python movies_clean_kpis_commented.py --in movies.csv --out_xlsx movies_report.xlsx --out_clean_csv movies_clean.csv --out_kpis_csv movies_kpis.csv
-"""
 import pandas as pd  # Librería principal para manipulación de datos
 import numpy as np   # Para operaciones numéricas y NaN
 import argparse      # Para capturar argumentos de línea de comandos

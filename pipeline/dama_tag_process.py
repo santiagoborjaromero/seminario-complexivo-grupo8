@@ -1,13 +1,4 @@
 
-# -*- coding: utf-8 -*-
-"""
-tags_clean_kpis_commented.py
-Limpia tags.csv, calcula KPIs (DAMA) y guarda:
- - Excel: tags_report.xlsx (hojas: KPIs_tags, Clean_tags)
- - CSV:   tags_clean.csv, tags_kpis.csv
-Uso:
-  python tags_clean_kpis_commented.py --in tags.csv --movies movies.csv --out_xlsx tags_report.xlsx --out_clean_csv tags_clean.csv --out_kpis_csv tags_kpis.csv
-"""
 import pandas as pd  # Manipulación de datos
 import numpy as np   # Utilidades numéricas
 import argparse      # Argumentos CLI

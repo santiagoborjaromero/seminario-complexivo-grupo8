@@ -1,13 +1,4 @@
 
-# -*- coding: utf-8 -*-
-"""
-ratings_clean_kpis_commented.py
-Limpia ratings.csv, calcula KPIs (DAMA) y guarda:
- - Excel: ratings_report.xlsx (hojas: KPIs_ratings, Clean_ratings)
- - CSV:   ratings_clean.csv, ratings_kpis.csv
-Uso:
-  python ratings_clean_kpis_commented.py --in ratings.csv --movies movies.csv --out_xlsx ratings_report.xlsx --out_clean_csv ratings_clean.csv --out_kpis_csv ratings_kpis.csv
-"""
 import pandas as pd  # Manipulación de datos
 import numpy as np   # Operaciones numéricas
 import argparse      # Argumentos CLI
