@@ -10,14 +10,11 @@ RUN apt-get update -y && apt-get install -y \
     libgomp1 \
     build-essential \
     libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists
 
 RUN pip install -r requirements-api.txt
-
 COPY . .
-
 EXPOSE 8000
-
 CMD ["uvicorn", "main_api:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 ```
 ```c

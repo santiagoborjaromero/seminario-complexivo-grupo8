@@ -37,10 +37,6 @@ def recommend_by_genre(target_genre, movies_df, genres_list, top_n=10):
         by=['similarity', 'rating_promedio', 'rating_conteo'],
         ascending=[False, False, False]
     ).head(top_n)
-    # recommended = recommended.sort_values(
-    #     by=['similarity'],
-    #     ascending=[False]
-    # ).head(top_n)
     
     return recommended
 
