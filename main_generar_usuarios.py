@@ -5,16 +5,21 @@ from faker import Faker
 import random
 
 def sin_tilde(email):
+    
     replacements = (("á", "a"), ("é", "e"), ("í", "i"), ("ó", "o"), ("ú", "u"))
     for a, b in replacements:
         email = email.replace(a, b).replace(a.upper(), b.upper())
     return email
 
+print(f"Usuarios - Establecimiento de idioma en faker")
 fake = Faker('es_ES')  # o 'es_ES' 
+
+print(f"Usuarios - Rango de usuarios a crear")
 rango = range(1,138494)
     
 data = []
 userid = 0
+print(f"Usuarios - Creacion de usuarios aleatorios")
 for i in rango:
     nombre = fake.name()
     email = nombre.lower().replace(" ", ".") + "@ejemplo.com"
@@ -50,19 +55,22 @@ for i in rango:
     fila = [i, nombre, email, passwd, genero, provincia]
     data.append(fila)
 
+print(f"Usuarios - Creacion de dataframe")
 columnas = ['userid', 'nombre', 'email', 'passwd', 'genero', 'provincia'] 
 df = pd.DataFrame(data, columns=columnas)
 
+print(f"Usuarios - Reemplazando caracteres no permitidos en email")
 df['email'] = df['email'].apply(sin_tilde)
 
 df_user = df.copy()
 
+print(f"Usuarios - Carga de archivo de raitings")
 # df_user_original = pd.read_csv(r"./data/usuarios.csv", encoding="utf8")
 df_rating = pd.read_csv(r"./data/process/clean_rating.csv", encoding="utf8")
 
 # df_user = df_user_original[["userid","nombre","email","genero"]]
 # df_rating = df_rating_origin[df_rating_origin["year"] == 2015]
-
+print(f"Usuarios - Obteniendo resultados de raitings y votos")
 df_rating_last_year_promedio = df_rating.groupby("userid").agg({"rating": "mean"})
 df_rating_last_year_votos = df_rating.groupby("userid").agg({"rating": "count"})
 
@@ -79,4 +87,5 @@ df = df.sort_values(by="votos", ascending=False)
 df = df.dropna(subset=["rating","votos"], how="all")
 # print(df.shape)
 
+print(f"Usuarios - Creando archivo data/process/usuarios.csv")
 df.to_csv("./data/process/usuarios.csv", index=False)
