@@ -15,7 +15,6 @@ st.set_page_config(
 # Define las rutas a los archivos de datos procesados
 BASE_DIR = os.getcwd() 
 DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
-API_BASE_URL = "http://localhost:8000"
 
 #  Función principal que ejecuta  Streamlit.
 def main():

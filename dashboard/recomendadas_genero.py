@@ -11,7 +11,6 @@ TMDB_API_KEY = "c8f4aca1c7dedc6184e0cf3f98e2665e"
 # Define las rutas a los archivos de datos procesados
 BASE_DIR = os.getcwd() 
 DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
-API_BASE_URL = "http://localhost:8000"
 
 
 # Configura los metadatos de la página (título, ícono, layout)

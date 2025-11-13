@@ -18,7 +18,7 @@ st.set_page_config(
 
 BASE_DIR = os.getcwd() 
 print(BASE_DIR)
-M = os.path.join(BASE_DIR, 'images', 'M.jpg')
+M = os.path.join(BASE_DIR, 'images', 'M.png')
 F = os.path.join(BASE_DIR, 'images', 'F.png')
 
 current_user = st.session_state.user_data
