@@ -1,8 +1,0 @@
-Tabla,KPI,Valor_%,Total_registros,Meta_%,Notas
-tags,% userId no nulos,100.0,465564,100,
-tags,% movieId no nulos,100.0,465564,100,
-tags,% tag no vacío,100.0,465564,95,
-tags,% FK movieId en movies,100.0,465564,99,
-tags,% timestamps válidos,100.0,465564,98,
-tags,% timestamps no futuros,100.0,465564,98,
-tags,% tags razonables,99.98,465564,95,
