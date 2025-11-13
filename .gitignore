@@ -210,3 +210,7 @@ __marimo__/
 
 # Por aca nuestros ignores
 venv
+data/
+*.csv
+*.xls
+bak/

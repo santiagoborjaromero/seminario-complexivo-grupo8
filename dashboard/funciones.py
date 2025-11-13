@@ -8,7 +8,8 @@ import math
 # Define las rutas a los archivos de datos procesados
 #---------------------------------------------------------
 
-API_BASE_URL = "https://api-seminario-complexivo-grupo8.onrender.com"
+# API_BASE_URL = "https://api-seminario-complexivo-grupo8.onrender.com"
+API_BASE_URL = "http://localhost:8000"
 BASE_DIR = os.getcwd() 
 DATA_PROCESS_DIR = os.path.join(BASE_DIR, 'data', 'process')
 TMDB_API_KEY = "c8f4aca1c7dedc6184e0cf3f98e2665e"
