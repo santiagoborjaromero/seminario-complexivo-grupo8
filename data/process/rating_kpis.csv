@@ -1,0 +1,9 @@
+Tabla,KPI,Valor_%,Total_registros,Meta_%,Notas
+ratings,% userId válidos,100.0,20000263,100,
+ratings,% movieId válidos,100.0,20000263,100,
+ratings,% FK movieId en movies,100.0,20000263,99,
+ratings,% ratings 0..5,100.0,20000263,99,
+ratings,% ratings numéricos,100.0,20000263,99,
+ratings,% timestamps válidos,39.74,20000263,98,
+ratings,% timestamps no futuros,39.74,20000263,98,
+ratings,"% pares (userId,movieId) consistentes",100.0,20000263,99,

@@ -1,0 +1,6 @@
+Tabla,KPI,Valor_%,Total_registros,Meta_%,Notas
+movies,% movieId únicos,100.0,27278,100,
+movies,% títulos no nulos,100.0,27278,100,
+movies,% películas con género,100.0,27278,100,
+movies,% géneros formato estándar,99.1,27278,98,
+movies,% año en título válido,99.87,27278,95,
