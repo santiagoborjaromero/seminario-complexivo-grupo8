@@ -2,11 +2,9 @@ from fastapi import APIRouter, Path, Query
 from typing import Annotated
 from api.utils.funciones import load_data
 import pandas as pd
-from pipeline.data_saving import guardar_informacion
 from sklearn.metrics.pairwise import cosine_similarity
-from pipeline.data_loader import load_data
+from api.utils.funciones import load_data
 import numpy as np
-
 
 recommed_routes = APIRouter()
 
