@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 BASE_DIR = os.getcwd() 
-print(BASE_DIR)
+# print(BASE_DIR)
 M = os.path.join(BASE_DIR, 'images', 'M.png')
 F = os.path.join(BASE_DIR, 'images', 'F.png')
 

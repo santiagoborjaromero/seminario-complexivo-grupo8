@@ -75,7 +75,7 @@ def main():
         "movie_title": movie_title
     }
     
-    print(parameters)
+    # print(parameters)
     # --------------------------------------
     # Traer el listado de Movies con los filtros seleccionados 
     # --------------------------------------

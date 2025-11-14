@@ -2,7 +2,7 @@ import streamlit as st
 import os
 
 base_dir = os.getcwd() 
-print(base_dir)
+# print(base_dir)
 M = os.path.join(base_dir, 'images', 'M.png')
 F = os.path.join(base_dir, 'images', 'F.png')
 
