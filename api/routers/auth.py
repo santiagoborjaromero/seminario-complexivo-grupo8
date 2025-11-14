@@ -17,11 +17,12 @@ TAG = "Auth"
 def login(dusuario: Auth):
     try:
         usuario = dusuario.model_dump()
+        print(f'Abriendo archivo usuario')
         duser = load_data("usuarios.csv")
         temp = json.loads(duser.to_json(orient='records'))
         user = {}
         for d in temp:
-            print(f'{d["email"]} | {d["passwd"]} | {usuario["clave"]}')
+            # print(f'{d["email"]} | {d["passwd"]} | {usuario["clave"]}')
             if (d["email"] == usuario["usuario"]) and (str(d["passwd"]) == usuario["clave"]):
                 user = {
                     "userid": d["userid"],
