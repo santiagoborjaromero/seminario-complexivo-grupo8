@@ -1,10 +1,10 @@
 import streamlit as st
 import os
 
-BASE_DIR = os.getcwd() 
-print(BASE_DIR)
-M = os.path.join(BASE_DIR, 'images', 'M.png')
-F = os.path.join(BASE_DIR, 'images', 'F.png')
+base_dir = os.getcwd() 
+print(base_dir)
+M = os.path.join(base_dir, 'images', 'M.png')
+F = os.path.join(base_dir, 'images', 'F.png')
 
 current_user = st.session_state.user_data
 
