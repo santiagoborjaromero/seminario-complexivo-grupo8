@@ -5,7 +5,7 @@ def load_data(file_path):
     base_dir = os.getcwd() 
     data_process_dir = os.path.join(base_dir, 'data', 'process')
     processed_file = os.path.join(data_process_dir, file_path)
-    # print(PROCESSED_FILE)
+    print(processed_file)
     try:
         df = pd.read_csv(processed_file, encoding='utf8')
         return df
