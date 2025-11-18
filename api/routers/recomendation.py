@@ -292,8 +292,7 @@ def colab(
         movie_corr = movie_corr.sort_values(ascending=False).reset_index()
         
         print("Filtro Colaborativo - Uniendo recomendacion con data del las portadas de las peliculas")
-        # mr_df = pd.merge(movie_corr, movies_original, left_on="movieid", right_on="movieid", how="left")
-        mr_df = pd.merge(movie_corr, movies_original, on="title", how="left").head(11)
+        mr_df = pd.merge(movie_corr, movies_original, on="title", how="left").head(6)
         ddata = mr_df.to_json(orient='records')
         # print(ddata)
         print("Filtro Colaborativo - Enviando")

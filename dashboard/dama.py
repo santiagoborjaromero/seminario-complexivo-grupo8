@@ -58,7 +58,7 @@ def main():
         movie_dama_data = json.loads(resp_movie_dama.get("data", False))
         df_movie_dama = pd.DataFrame(movie_dama_data)
         st.dataframe(df_movie_dama.head(15))
-        st.image('images/movie_dama.png', caption='Movie Dama KPI', use_container_width=True)
+        st.image('images/movie_dama.png', caption='Movie Dama KPI', width='stretch')
     elif selected_dama == "Rating":
         #Carga la data de rating_kpis
         resp_rating_dama = api("/data/rating_dama")
@@ -71,7 +71,7 @@ def main():
         rating_dama_data = json.loads(resp_rating_dama.get("data", False))
         df_rating_dama = pd.DataFrame(rating_dama_data)
         st.dataframe(df_rating_dama.head(15))
-        st.image('images/rating_dama.png', caption='Movie Dama KPI', use_container_width=True)
+        st.image('images/rating_dama.png', caption='Movie Dama KPI', width='stretch')
     elif selected_dama == "Tag":
         #Carga la data de tag_kpis
         resp_tag_dama = api("/data/tag_dama")
@@ -84,7 +84,7 @@ def main():
         tag_dama_data = json.loads(resp_tag_dama.get("data", False))
         df_tag_dama = pd.DataFrame(tag_dama_data)
         st.dataframe(df_tag_dama.head(15))
-        st.image('images/tag_dama.png', caption='Movie Dama KPI', use_container_width=True)
+        st.image('images/tag_dama.png', caption='Movie Dama KPI', width='stretch')
     
     
 if __name__ == "__main__":
