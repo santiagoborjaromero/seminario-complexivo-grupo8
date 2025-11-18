@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Path, Query
 from typing import Annotated
-from api.utils.funciones import load_data
 import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
-from api.utils.funciones import load_data
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+from numpy.linalg import svd
+
+from api.utils.funciones import load_data
 
 recommed_routes = APIRouter()
 
@@ -180,3 +181,130 @@ def contenido(
         message = err
         
     return {"status": status,"data": data, "message": message }
+
+
+@recommed_routes.get(
+    path="/recommendations/svd/{userid}/{limit}", 
+    summary="Recomendaciones por usuario con el metodo SVD", 
+    description="Recomendacion bajo el modelo de filtrado colaborativo basado en KKN que es el modelo de calculo por vecindad utilizando la similitud del coseno", 
+    tags=["Recomendaciones"])
+def methodsvd(
+        userid: Annotated[int, Path(title="Id del usuario a quien se debe hacer la recomendacion")],
+        limit: Annotated[int, Path(title="Número de items a recomendar")]
+    ):
+        
+    try:
+        print("Rating - Cargando data ")
+        ratings_original = load_data("clean_rating.csv")
+        print("Movies - Cargando data ")
+        movies_original = load_data(
+            "movie_perfil_contenido.csv",
+            # usecols = ["movieid", "title", "tmdbid", "genres"]
+        )
+        
+        # -------------------------------------------
+        # FILTRO BASADO EN CONTENIDO
+        # METODO SVD
+        # -------------------------------------------
+        print("SVD - Uniendo dataframes ")
+        df = pd.merge(ratings_original, movies_original, on='movieid')
+        
+        # MATRIZ - TABLA CRUZADA
+        print("SVD - Creando tabla cruzada o pivot ")
+        user_item_matrix = df.pivot_table(index='userid', columns='movieid', values='rating').fillna(0)
+
+        print("SVD - aplicando SVD ")
+        # Aplicacion de SVD Singular Value Decomposition
+        # R=U×Σ×V^T
+        #       R -> matriz original a descomponer
+        #       U -> matriz ortogonalde dimension de m x m (donde m, es el numero de filas de R) y U son los vectores singulares izquierdois
+        #       Σ -> Es una matriz diagonal de dimensiones m x n (donde nes el número de columnas de R 
+        #            que contiene los valores singulares en su diagonal, ordenados de mayor a menor. El resto de los elementos son cero.
+        #       V^T -> Es la traspuesta de una matriz ortogonal llamada V. Las columnas de V son los vectores singulares derechos, 
+        #            y sus filas corresponden a las columnas de V^T
+        
+        print("SVD - Obteniendo valores de formula R=U×Σ×V^T ")
+        R = user_item_matrix.to_numpy()
+        U, sigma, Vt = svd(R, full_matrices=False)
+        
+        print("SVD - Obteniendo recomendacion")
+        k = 50
+        sigma_k = np.diag(sigma[:k])
+
+        R_approx = np.dot(np.dot(U[:, :k], sigma_k), Vt[:k, :])
+        R_pred_df = pd.DataFrame(R_approx, 
+                                index=user_item_matrix.index, 
+                                columns=user_item_matrix.columns)
+        R_pred_df.head()
+        
+        user_ratings = user_item_matrix.loc[userid]
+        user_predictions = R_pred_df.loc[userid]
+
+        # Recommend top 10 unrated movies
+        unrated = user_ratings[user_ratings == 0]
+        recommendations = user_predictions[unrated.index].sort_values(ascending=False).head(10)
+        
+        print("SVD - Uniendo resultados con base movies")
+        recommendations.reset_index( inplace=False )
+        rdf = pd.merge(recommendations, movies_original, on="movieid", how="left")
+        
+        ddata = rdf.to_json(orient='records')
+        
+        status = True
+        data = ddata
+        message = ""
+    except Exception as err:
+        status = False
+        data = {}
+        message = err
+        
+    return {"status": status,"data": data, "message": message }
+
+
+
+@recommed_routes.get(
+    path="/recommendations/pelicula/{movie_title}", 
+    summary="Recomendaciones por una pelicula determinada", 
+    description="Recomendacion bajo el modelo de filtrado colaborativo basado en KKN que es el modelo de calculo por vecindad utilizando la similitud del coseno", 
+    tags=["Recomendaciones"])
+def colab(
+        movie_title: Annotated[str, Path(title="Nombre de la pelicula para hacer la recomendacion")]
+    ):
+    try:
+        print("Rating - Cargando data ")
+        ratings = load_data("clean_rating.csv")
+        print("Movies - Cargando data ")
+        movies_original = load_data("movie_perfil_contenido.csv")
+        
+        # -------------------------------------------
+        # FILTRO COLABORATIVO
+        # METODO BASADO EN VECINDAD - KNN K-Nearest Neighbors
+        # -------------------------------------------
+        
+        print("Procesando Data Rating - Union Ratings y Movies")
+        # Union de promedio y conteo para que sea unido a movies de forma general
+        mov_user_df = pd.merge(ratings, movies_original, on="movieid", how="left")
+        mov_user_pv = mov_user_df.pivot_table(index = ["userid"],columns = ["title"],values = "rating").fillna(0)
+        movie = mov_user_pv[movie_title]
+        
+        print("Procesando Data Rating - Por Correlacion")
+        movie_corr = mov_user_pv.corrwith(movie)
+        movie_corr = movie_corr.sort_values(ascending=False).reset_index()
+        
+        print("Filtro Colaborativo - Uniendo recomendacion con data del las portadas de las peliculas")
+        # mr_df = pd.merge(movie_corr, movies_original, left_on="movieid", right_on="movieid", how="left")
+        mr_df = pd.merge(movie_corr, movies_original, on="title", how="left").head(11)
+        ddata = mr_df.to_json(orient='records')
+        # print(ddata)
+        print("Filtro Colaborativo - Enviando")
+        
+        status = True
+        data = ddata
+        message = ""
+    except Exception as err:
+        status = False
+        data = {}
+        message = err
+        
+    return {"status": status,"data": data, "message": message }
+

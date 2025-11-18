@@ -39,11 +39,43 @@ st.sidebar.caption(f":material/explore_nearby: {current_user["provincia"]}")
 items_per_page = st.sidebar.selectbox(
     "Numero de Peliculas", ["10","15","20","25","30","50"]
 )
+method_abr = st.sidebar.selectbox(
+    "Método de Recomendacion", ["KNN","SVD"]
+)
+
+if method_abr == "KNN":
+    method = "colaborativa"
+else:
+    method = "svd"
+    
 
 # Define las rutas a los archivos de datos procesados
 BASE_DIR = os.getcwd() 
 DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
 API_BASE_URL = "http://localhost:8000"
+
+
+def handle_recomendacion_por_pelicula():
+    # --------------------------------------
+    # Traer el listado de Movies con prediccion
+    # --------------------------------------
+    st.write(st.session_state.selectpelicula)
+    
+    # df = api(f"/recommendations/pelicula/{pelicula}")
+    # status = df.get("status", False)
+    # if status == False:
+    #     st.warning("La lista de películas está vacia")
+    #     message = df.get("message", False)
+    #     st.error(f"{message}")
+    #     return
+    
+    # df_filtrado = json.loads(df.get("data", False))
+
+    # col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
+    # df_procesado = pd.DataFrame(df_filtrado, columns=col_categoricas)
+    # df_procesado.reset_index(level=0, inplace=True)
+    
+    # st.dataframe(df_procesado)
 
 def main():
     st.subheader("🎬 Películas Recomendadas para ti")
@@ -51,7 +83,7 @@ def main():
     # --------------------------------------
     # Traer el listado de Movies con prediccion
     # --------------------------------------
-    df = api(f"/recommendations/colaborativa/{current_user["userid"]}/{items_per_page}")
+    df = api(f"/recommendations/{method}/{current_user["userid"]}/{items_per_page}")
     status = df.get("status", False)
     if status == False:
         st.warning("La lista de películas está vacia")
@@ -71,13 +103,22 @@ def main():
     else:
         num_cols = 5
         cols = st.columns(num_cols)
+        primera_pelicula = ""
+        nombre_de_peliculas = []
+        
         for i, row in enumerate(df_procesado.itertuples()):
             poster_url = get_poster_url(row.tmdbid, DEFAULT_POSTER)
             with cols[i % num_cols]:
+                
                 st.image(poster_url, width='stretch', caption=f"{row.rating_promedio:.1f} ⭐ ({row.rating_conteo:,} votos)")
                 
                 # Mantiene el título si es muy largo para mantener para q quede alineado el grid.
                 title = row.title
+                if i == 0 :
+                    primera_pelicula = title
+                
+                nombre_de_peliculas.append(title)
+                
                 if len(title) > 30:
                     title = title[:30] + "..."
                 
@@ -90,6 +131,49 @@ def main():
                     st.write(f"**Géneros:** {row.genres.replace('|', ', ')}")
                     if pd.notna(row.tag):
                             st.write(f"**Tags:** {str(row.tag)[:100]}...")
+        
+        st.subheader(f"🎬 Porque te gustó {primera_pelicula}")
+        
+        
+        # -----------------------------------------------------
+        # Traer el listado de Movies con prediccion por nombre
+        # -----------------------------------------------------
+        
+        
+        df2 = api(f"/recommendations/pelicula/{primera_pelicula}")
+        status = df2.get("status", False)
+        if status == False:
+            st.warning("La lista de películas está vacia")
+            message = df2.get("message", False)
+            st.error(f"{message}")
+            return
+        
+        df2_filtrado = json.loads(df2.get("data", False))
+
+        col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
+        df2_procesado = pd.DataFrame(df2_filtrado, columns=col_categoricas)
+        df2_procesado.reset_index(level=0, inplace=True)
+        num_cols = 5
+        cols = st.columns(num_cols)
+        
+        for i, row in enumerate(df2_procesado.itertuples()):
+            if i==0:
+                continue
+            poster_url = get_poster_url(row.tmdbid, DEFAULT_POSTER)
+            with cols[i % num_cols]:
+                
+                st.image(poster_url, width='stretch', caption=f"{row.rating_promedio:.1f} ⭐ ({row.rating_conteo:,} votos)")
+                
+                # Mantiene el título si es muy largo para mantener para q quede alineado el grid.
+                title = row.title
+                # Muestra el título  y  detalles.
+                with st.expander("Más detalles"):
+                    st.markdown(f"**Título:** {row.title}") # Título completo
+                    st.write(f"**Géneros:** {row.genres.replace('|', ', ')}")
+                    if pd.notna(row.tag):
+                            st.write(f"**Tags:** {str(row.tag)[:100]}...")
+        
+            
     
     
 if __name__ == "__main__":
