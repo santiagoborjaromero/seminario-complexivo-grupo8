@@ -74,9 +74,23 @@ def clean_and_kpis_tags(df_tags: pd.DataFrame, movies_ids: pd.Series | None):
     kpis.append(kpi_row("% timestamps válidos", pct(dt_valid.sum(), n), n, 98))
     kpis.append(kpi_row("% timestamps no futuros", pct((dt_valid & dt_not_future).sum(), n), n, 98))
 
-    # Razonabilidad simple del tag (longitud/formato)
-    tag_reasonable = df[tag].str.len().between(1, 100) & df[tag].str.fullmatch(r"[^\s].*", na=False)
-    kpis.append(kpi_row("% tags razonables", pct(tag_reasonable.sum(), n), n, 95))
+    # Limpia nulos y espacios innecesarios
+    tag_series = df[tag].fillna("").astype(str).str.strip()
+
+    # Regla 1: longitud mínima 5 caracteres, máximo 100
+    len_ok = tag_series.str.len().between(5, 100)
+
+    # Regla 2: solo letras y espacios internos
+    # ^[A-Za-z]+(?: [A-Za-z]+)*$  → letras + espacios simples entre palabras (opcional)
+    solo_letras = tag_series.str.fullmatch(r"[A-Za-z]+(?: [A-Za-z]+)*")
+
+    # Razonabilidad estricta
+    tag_reasonable = len_ok & solo_letras
+
+    # KPI
+    kpis.append(
+        kpi_row("% tags razonables", pct(tag_reasonable.sum(), n), n, 95)
+    )
 
     # --- Limpieza ---
     keep = (
