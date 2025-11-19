@@ -29,19 +29,19 @@ if __name__ == "__main__":
     
     # Procesando Movies
     df_movie, movie_source, unique_genres = procesar_movie(dict_df[files[0]])
-    print(type(df_movie))
+    # print(type(df_movie))
     
     # Procesando Tags
     df_tags_general, tags = procesar_tags(dict_df[files[1]])
-    print(type(df_tags_general))
+    # print(type(df_tags_general))
     
     # Procesando links
     df_links = procesar_link(dict_df[files[2]])
-    print(type(df_links))
+    # print(type(df_links))
     
     # Procesando Rating
     df_rating_general, dim_rating , rating_source = procesar_ratings(dict_df[files[3]])
-    print(type(df_rating_general))
+    # print(type(df_rating_general))
 
     # --------------------------------------
     # Uniones

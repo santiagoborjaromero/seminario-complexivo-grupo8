@@ -44,6 +44,7 @@ def clean_and_kpis_ratings(df_ratings: pd.DataFrame, movies_ids: pd.Series | Non
     df[movieId] = pd.to_numeric(df[movieId], errors="coerce")    # movieId a numérico
     df[rating]  = pd.to_numeric(df[rating], errors="coerce")     # rating a numérico
     df["_dt"]   = parse_timestamp(df[timestamp])                 # parsea timestamp
+    
 
     n = len(df)                                      # Total registros
     kpis = []                                        # Lista de KPIs
@@ -68,16 +69,50 @@ def clean_and_kpis_ratings(df_ratings: pd.DataFrame, movies_ids: pd.Series | Non
 
     # Validez/razonabilidad de fechas
    # 1) Normaliza la columna a datetime y quita zona horaria (queda datetime64[ns] "naive")
-    df["_dt"] = pd.to_datetime(df["_dt"], errors="coerce", utc=True).dt.tz_convert(None)
+    #df["_dt"] = pd.to_datetime(df["_dt"], errors="coerce", utc=True).dt.tz_convert(None)
+    df["_dt"] = pd.to_datetime(df[timestamp], errors="coerce", utc=True)
 
     # 2) Asegura que NOW también sea naive (UTC sin tz)
-    NOW = pd.Timestamp.utcnow().tz_localize(None)
+    #NOW = pd.Timestamp.utcnow().tz_localize(None)
+    NOW_UTC = pd.Timestamp.utcnow() 
 
     # 3) Ahora sí: valida y compara sin error
     dt_valid = df["_dt"].notna()
-    dt_not_future = dt_valid & (df["_dt"] <= NOW)
-    kpis.append(kpi_row("% timestamps válidos", pct(dt_valid.sum(), n), n, 98))
-    kpis.append(kpi_row("% timestamps no futuros", pct((dt_valid & dt_not_future).sum(), n), n, 98))
+    dt_not_future = dt_valid & (df["_dt"] <= NOW_UTC)
+    #kpis.append(kpi_row("% timestamps válidos", pct(dt_valid.sum(), n), n, 98))
+    #kpis.append(kpi_row("% timestamps no futuros", pct((dt_valid & dt_not_future).sum(), n), n, 98))
+    
+    MIN_DATE = pd.Timestamp(1990, 1, 1, tz="UTC")  # por ejemplo
+    dt_in_reasonable_range = dt_valid & (df["_dt"] >= MIN_DATE) & (df["_dt"] <= NOW_UTC)
+
+    # 4) KPIs
+    kpis.append(
+        kpi_row(
+            "% timestamps válidos",
+            pct(dt_valid.sum(), n),
+            n,
+            98
+        )
+    )
+
+    kpis.append(
+        kpi_row(
+            "% timestamps no futuros",
+            pct(dt_not_future.sum(), n),
+            n,
+            98
+        )
+    )
+
+    # (Opcional) KPI adicional de razonabilidad temporal
+    kpis.append(
+        kpi_row(
+            "% timestamps en rango razonable",
+            pct(dt_in_reasonable_range.sum(), n),
+            n,
+            97
+        )
+    )
 
     # Consistencia: (userId, movieId) no debería tener múltiples ratings distintos
     dup_pair = df.duplicated(subset=[userId, movieId], keep=False)  # Detecta pares repetidos

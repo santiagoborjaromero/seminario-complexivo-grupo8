@@ -117,7 +117,7 @@ def procesar_ratings(rating_source):
     print("Procesando Data Rating - Agrupacion 2 - Reemplazo valores NaN")
     df_year_pivot = df_year_pivot.replace(np.nan, 0)
     # print(df_year_pivot)
-    
+
     df_year_pivot = df_year_pivot.reset_index()
     # print(df_year_pivot)
     df_year_pivot.rename(columns={'movieid': 'movieid'}, inplace=True) 
