@@ -8,11 +8,11 @@ import json
 from dashboard.funciones import load_data, get_dynamic_columns, get_poster_url, api
 
 # Configura los metadatos de la página (título, ícono, layout)
-st.set_page_config(
-    page_title="🔥 Calidad de Datos 🔥",
-    page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
-    layout="wide"
-)
+# st.set_page_config(
+#     page_title="🔥 Calidad de Datos 🔥",
+#     page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
+#     layout="wide"
+# )
 
 # Define las rutas a los archivos de datos procesados
 BASE_DIR = os.getcwd() 

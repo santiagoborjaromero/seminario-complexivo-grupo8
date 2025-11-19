@@ -11,26 +11,13 @@ TMDB_API_KEY = "c8f4aca1c7dedc6184e0cf3f98e2665e"
 # Define las rutas a los archivos de datos procesados
 BASE_DIR = os.getcwd() 
 DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
-
-
-# Configura los metadatos de la página (título, ícono, layout)
-st.set_page_config(
-    page_title="🔥 Películas para ti por genero 🔥",
-    page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
-    layout="wide"
-)
+LOGO = os.path.join(BASE_DIR, 'images', 'logom.png')
 
 def main():
-    #  Crea el panel lateral para los filtros.
-    st.sidebar.title("Películas por Género 🎬")
-    
     # --------------------------------------
     # Genres, consulta 
     # --------------------------------------
     resp_genres = api("/data/genres")
-    # # print(resp_genres)
-    # if resp_genres is None:
-    #     resp_genres = []
     
     status = resp_genres.get("status", False)
     if status == False:
@@ -55,6 +42,7 @@ def main():
     # --------------------------------------
     # Traer el listado de Movies recomendados por genero
     # --------------------------------------
+    
     df = api(f"/recommendations/contenido/{selected_genres}/{items_per_page}")
     status = df.get("status", False)
     if status == False:
@@ -73,6 +61,12 @@ def main():
     if len(df_procesado) == 0:
         st.warning("No se encontraron películas con los filtros seleccionados.")
     else:
+        col1,col2 = st.columns([0.25,4])
+        with col1:
+            st.image(LOGO, width=60)
+        with col2:
+            st.markdown("### Películas Recomendadas por Género")
+        
         num_cols = 5
         cols = st.columns(num_cols)
         for i, row in enumerate(df_procesado.itertuples()):

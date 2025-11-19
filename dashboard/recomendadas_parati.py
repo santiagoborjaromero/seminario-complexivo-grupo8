@@ -9,18 +9,12 @@ from dashboard.funciones import load_data, get_dynamic_columns, get_poster_url, 
 # Define la clave de la API de TMDB (v3 auth)
 TMDB_API_KEY = "c8f4aca1c7dedc6184e0cf3f98e2665e"
 
-# Configura los metadatos de la página (título, ícono, layout)
-st.set_page_config(
-    page_title="🔥 Películas para ti 🔥",
-    page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
-    layout="wide"
-)
 
 BASE_DIR = os.getcwd() 
-# print(BASE_DIR)
+
 M = os.path.join(BASE_DIR, 'images', 'M.png')
 F = os.path.join(BASE_DIR, 'images', 'F.png')
-
+LOGO = os.path.join(BASE_DIR, 'images', 'logom.png')
 current_user = st.session_state.user_data
 
 if "logged_in" not in st.session_state or current_user == {}:
@@ -55,30 +49,12 @@ DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
 API_BASE_URL = "http://localhost:8000"
 
 
-def handle_recomendacion_por_pelicula():
-    # --------------------------------------
-    # Traer el listado de Movies con prediccion
-    # --------------------------------------
-    st.write(st.session_state.selectpelicula)
-    
-    # df = api(f"/recommendations/pelicula/{pelicula}")
-    # status = df.get("status", False)
-    # if status == False:
-    #     st.warning("La lista de películas está vacia")
-    #     message = df.get("message", False)
-    #     st.error(f"{message}")
-    #     return
-    
-    # df_filtrado = json.loads(df.get("data", False))
-
-    # col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
-    # df_procesado = pd.DataFrame(df_filtrado, columns=col_categoricas)
-    # df_procesado.reset_index(level=0, inplace=True)
-    
-    # st.dataframe(df_procesado)
-
 def main():
-    st.subheader("🎬 Películas Recomendadas para ti")
+    col1,col2 = st.columns([0.25,4])
+    with col1:
+        st.image(LOGO, width=60)
+    with col2:
+        st.markdown("### Películas Recomendadas para ti")
 
     # --------------------------------------
     # Traer el listado de Movies con prediccion
@@ -132,13 +108,16 @@ def main():
                     if pd.notna(row.tag):
                             st.write(f"**Tags:** {str(row.tag)[:100]}...")
         
-        st.subheader(f"🎬 Porque te gustó {primera_pelicula}")
         
+        col1,col2 = st.columns([0.25,4])
+        with col1:
+            st.image(LOGO, width=60)
+        with col2:
+            st.subheader(f"Porque te gustó {primera_pelicula}")
         
         # -----------------------------------------------------
         # Traer el listado de Movies con prediccion por nombre
         # -----------------------------------------------------
-        
         
         df2 = api(f"/recommendations/pelicula/{primera_pelicula}")
         status = df2.get("status", False)

@@ -3,7 +3,9 @@ import streamlit as st
 st.set_page_config(
     page_title="🔥 Mis Películas 🔥",
     page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
-    layout="wide"
+    # layout="centered",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 def logout():
@@ -25,7 +27,7 @@ if __name__ == "__main__":
         pages.append(st.Page("dashboard/recomendadas_genero.py", title="Top por género", icon=":material/star_outline:"))
         pages.append(st.Page("dashboard/analisis.py", title="Análisis de Datos", icon=":material/area_chart:"))
         pages.append(st.Page("dashboard/dama.py", title="Calidad de Datos", icon=":material/area_chart:"))
-        pages.append(st.Page(logout, title="Salir", icon=":material/area_chart:"))
+        pages.append(st.Page(logout, title="Salir", icon=":material/power_settings_new:"))
         pg = st.navigation(pages, position="top")
     else:
         pages.append(st.Page("dashboard/signin.py", title="Ingreso", icon=":material/login:"))

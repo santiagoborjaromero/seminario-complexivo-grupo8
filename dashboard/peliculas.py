@@ -1,26 +1,16 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import os
 import json
-from dashboard.funciones import load_data, get_dynamic_columns, get_poster_url, api, apiPost
-
-# Configura los metadatos de la página (título, ícono, layout)
-st.set_page_config(
-    page_title="🔥 Películas mas puntuadas en toda la historia 🔥",
-    page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
-    layout="wide"
-)
+from dashboard.funciones import get_poster_url, api, apiPost
 
 # Define las rutas a los archivos de datos procesados
 BASE_DIR = os.getcwd() 
 DEFAULT_POSTER = os.path.join(BASE_DIR, 'images', 'default.png')
+LOGO = os.path.join(BASE_DIR, 'images', 'logom.png')
 
 #  Función principal que ejecuta  Streamlit.
 def main():
-    #  Crea el panel lateral para los filtros.
-    st.sidebar.title("Nuestras Películas 🎬")
-    
     # --------------------------------------
     # Genres, consulta 
     # --------------------------------------
@@ -90,7 +80,6 @@ def main():
         return
 
     df_filtrado = json.loads(df.get("data", False))
-    # st.dataframe(df_filtrado)
 
     col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
     df_procesado = pd.DataFrame(df_filtrado, columns=col_categoricas)
@@ -99,6 +88,13 @@ def main():
     if len(df_procesado) == 0:
         st.warning("No se encontraron películas con los filtros seleccionados.")
     else:
+        col1,col2 = st.columns([0.25,4])
+        with col1:
+            st.image(LOGO, width=60)
+        with col2:
+            st.markdown("### Listado completo de Películas")
+            
+            
         num_cols = 5
         cols = st.columns(num_cols)
         for i, row in enumerate(df_procesado.itertuples()):

@@ -1,15 +1,11 @@
 import streamlit as st
-import json
+import os
 
 from dashboard.funciones import apiPost
 
-st.set_page_config(
-    page_title="🔥 Mis Películas 🔥",
-    page_icon="🎬",#https://docs.streamlit.io/develop/api-reference/navigation/st.page
-    layout="centered"
-)
 
-st.subheader('Autorización')
+base_dir = os.getcwd() 
+logo = os.path.join(base_dir, 'images', 'logo.png')
 
 def func_login():
     # st.write(st.session_state)
@@ -34,12 +30,17 @@ def func_login():
 
     
 
-with st.form(key='my_form'):
-    st.write("Por favor ingrese usuario y contraseña")
-    
-    st.text_input("Usuario", key="usuario", placeholder="Ingrese del usuario")
-    st.text_input("Contraseña", key="clave", type="password", placeholder="Contraseña del usuario")
-    submit = st.form_submit_button(label='Ingresar', on_click=func_login)
-    
+c1,c2 = st.columns([1, 3])
+with c1:
+    st.image(logo)
+with c2:
+    # st.subheader('Autorización')
+    with st.form(key='my_form'):
+        st.write("Por favor ingrese usuario y contraseña")
         
-    
+        st.text_input("Usuario", key="usuario", placeholder="Ingrese del usuario")
+        st.text_input("Contraseña", key="clave", type="password", placeholder="Contraseña del usuario")
+        submit = st.form_submit_button(label='Ingresar', on_click=func_login)
+        
+        
+        

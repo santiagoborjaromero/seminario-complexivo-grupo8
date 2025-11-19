@@ -65,11 +65,8 @@ df['email'] = df['email'].apply(sin_tilde)
 df_user = df.copy()
 
 print(f"Usuarios - Carga de archivo de raitings")
-# df_user_original = pd.read_csv(r"./data/usuarios.csv", encoding="utf8")
 df_rating = pd.read_csv(r"./data/process/clean_rating.csv", encoding="utf8")
 
-# df_user = df_user_original[["userid","nombre","email","genero"]]
-# df_rating = df_rating_origin[df_rating_origin["year"] == 2015]
 print(f"Usuarios - Obteniendo resultados de raitings y votos")
 df_rating_last_year_promedio = df_rating.groupby("userid").agg({"rating": "mean"})
 df_rating_last_year_votos = df_rating.groupby("userid").agg({"rating": "count"})
