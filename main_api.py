@@ -11,7 +11,6 @@ app = FastAPI(
     summary="Grupo No 8",
     description="Hugo Herrera, Jorge López y Jaime Borja",
     version="0.0.1 beta",
-    openapi_url="/api/v1/",
     openapi_tags=[
         {
             "name": "Auth",
