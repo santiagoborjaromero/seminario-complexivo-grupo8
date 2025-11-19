@@ -7,7 +7,7 @@ from api.routers.auth import api_routes
 
 app = FastAPI(
     debug=True,
-    title="Api - Sistema Híbrido de Recomendación de Peliculas",
+    title="Api - MovieMatch",
     summary="Grupo No 8",
     description="Hugo Herrera, Jorge López y Jaime Borja",
     version="0.0.1 beta",
