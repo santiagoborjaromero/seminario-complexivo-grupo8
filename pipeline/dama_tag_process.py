@@ -89,7 +89,7 @@ def clean_and_kpis_tags(df_tags: pd.DataFrame, movies_ids: pd.Series | None):
 
     # KPI
     kpis.append(
-        kpi_row("% tags razonables", pct(tag_reasonable.sum(), n), n, 95)
+        kpi_row("% tags razonables", pct(tag_reasonable.sum(), n), n, 95, "La data resultante contiene tags poco comunes o irrelevantes. Considerar una limpieza adicional o revisión de los criterios de inclusión. No se recomienda para los tableros de dashboard.")
     )
 
     # --- Limpieza ---
