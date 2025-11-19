@@ -52,18 +52,39 @@ def movies(form_data: MovieFormData):
         count_slider_max = fdata["count_slider_max"]
         items_per_page = fdata["items_per_page"]
         movie_title = fdata["movie_title"]
+        filter = fdata["filter"]
+        userid = fdata["userid"]
         
-        #Cargand data
+        print("Filtro", filter)
+        # Cargand data Movies
         ddata = load_data("movie_perfil_contenido.csv")
         
-        # Seleccionando las columnas necesarias
-        # col_categoricas = ['movieid', 'title', 'genres', 'rating_promedio', 'rating_conteo', 'tag', 'tmdbid']
-        # ddata = pd.DataFrame(data, columns=col_categoricas)
-        # ddata.reset_index(level=0, inplace=True)
-        # # ddata.reset_index()
-        # print(movie_title)
-        # print(ddata)
-        
+        if filter != "Todas":
+            print("Cargando tus preferencias")
+            rating = load_data("clean_rating.csv")
+            
+            rating_filtrado = rating[rating['userid'] == userid]
+            grupo = rating_filtrado.groupby(["movieid"])["rating"]
+            rating_movies_promedio = grupo.mean()
+            rating_movies_conteo = grupo.count()
+            
+            ratings_aggs = pd.merge(rating_movies_promedio, rating_movies_conteo, on="movieid", how="left")
+            print("Procesando Data Rating - Renombrado de columnas")
+            # Cambio de nombre de columnas
+            ratings_aggs = ratings_aggs.rename(
+                columns={
+                    "rating_x": "rating_usuario_promedio",
+                    "rating_y": "rating_usuario_conteo"
+                }
+            )
+            ratings_aggs = ratings_aggs.reset_index()
+            print(ratings_aggs.shape)
+            newdf = pd.merge(ratings_aggs, ddata, on="movieid", how="left")
+            # newdf = newdf.sort_values(by="rating_usuario_conteo", ascending=False)
+            print(newdf.shape)
+            ddata = newdf.copy()
+            
+                
         if not movie_title:
             #Filtrado por genero si existe
             if len(genres) > 0:
@@ -74,12 +95,20 @@ def movies(form_data: MovieFormData):
             # Filtrado por rating en su rango si el maximo es mayor que 0
             if (rating_max > 0):
                 print(rating_min, rating_max)
-                filtro = (ddata["rating_promedio"] >= rating_min) & (ddata["rating_promedio"] <= rating_max)
+                if filter == "Todas":
+                    filtro = (ddata["rating_promedio"] >= rating_min) & (ddata["rating_promedio"] <= rating_max)
+                else:
+                    filtro = (ddata["rating_usuario_promedio"] >= rating_min) & (ddata["rating_usuario_promedio"] <= rating_max)
                 ddata = ddata[filtro]
 
             if (count_slider_max > 0):
                 print(count_slider_min, count_slider_max)
-                filtro = (ddata["rating_conteo"] >= count_slider_min) & (ddata["rating_conteo"] <= count_slider_max)
+                if filter == "Todas":
+                    print("Slider Todas")
+                    filtro = (ddata["rating_conteo"] >= count_slider_min) & (ddata["rating_conteo"] <= count_slider_max)
+                else:
+                    print("Slider Tus mas votadas")
+                    filtro = (ddata["rating_usuario_conteo"] >= count_slider_min) & (ddata["rating_usuario_conteo"] <= count_slider_max)
                 ddata = ddata[filtro]
         else:
             print("Titulo:", movie_title)
@@ -87,20 +116,32 @@ def movies(form_data: MovieFormData):
             ddata = ddata[filtro]
             
         # Ordenado
+        print("Ordenando")
         if orderby == "Rating":
-            ddata = ddata.sort_values(by="rating_promedio", ascending=False)
+            if filter == "Todas":
+                ddata = ddata.sort_values(by="rating_promedio", ascending=False)
+            else:
+                ddata = ddata.sort_values(by="rating_usuario_promedio", ascending=False)
+                
         elif orderby == "Popularidad":
-            ddata = ddata.sort_values(by="rating_conteo", ascending=False)
-        
+            if filter == "Todas":
+                ddata = ddata.sort_values(by="rating_conteo", ascending=False)
+            else:
+                ddata = ddata.sort_values(by="rating_usuario_conteo", ascending=False)
+                
+
         # Columnas 
         # columnas = ddata.columns
+        print("Obteniendo Columnas")
         columns = ddata.columns
         col_str = ",".join(columns)
         
         # Limite   
+        print("Aplicando imite")
         ddata = ddata.iloc[0:items_per_page]
         # print(ddata)
         
+        print("Convirtiendo a JSON")
         ddata = ddata.to_json(orient='records')
         # data = duser.to_json(orient='records', indent=4)
         status = True

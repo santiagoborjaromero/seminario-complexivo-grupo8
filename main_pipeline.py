@@ -40,6 +40,7 @@ if __name__ == "__main__":
     # print(type(df_links))
     
     # Procesando Rating
+    # df_rating_general, dim_rating , rating_source, ratings_user_agg = procesar_ratings(dict_df[files[3]])
     df_rating_general, dim_rating , rating_source = procesar_ratings(dict_df[files[3]])
     # print(type(df_rating_general))
 
@@ -72,6 +73,7 @@ if __name__ == "__main__":
     archivos = [
         # {"file_name": "movie", "target": movie_source},
         {"file_name": "clean_rating", "target": ratings},
+        # {"file_name": "clean_rating_by_user", "target": ratings_user_agg},
         # {"file_name": "tag", "target": tag},
         {"file_name": "clean_links", "target": df_links},
         {"file_name": "genres", "target": unique_genres},

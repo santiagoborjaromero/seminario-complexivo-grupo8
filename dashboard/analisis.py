@@ -229,4 +229,16 @@ else:
     st.markdown("---")
     # Tabla de datos detallada
     st.subheader("Datos Filtrados (Detalle)")
-    st.dataframe(df_filtrado, use_container_width=True)
+    
+
+    columnas = ["title", "rating_conteo", "genres", "tag"]
+    newdf = pd.DataFrame(df_filtrado, columns=columnas)
+    
+    column_configuration = {
+        "title": st.column_config.TextColumn("Titulo", help="Titulo de la Pelicula", max_chars=100, width="medium"),
+        "rating_conteo": st.column_config.TextColumn("Votos", help="Votos en total", max_chars=20, width="small"),
+        "genres": st.column_config.TextColumn("Generos", help="Generos de la Pelicula", max_chars=100, width="medium"),
+        "tag": st.column_config.TextColumn("Tag", help="Tags de la Pelicula", max_chars=100, width="medium"),
+    }
+    
+    st.dataframe(newdf.head(10), column_config=column_configuration, hide_index=True, width='stretch')

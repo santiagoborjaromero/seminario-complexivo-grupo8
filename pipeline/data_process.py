@@ -67,7 +67,25 @@ def procesar_ratings(rating_source):
     print("Procesando Data Rating - Conversion de campo timestamp de object a datetime")
     # Cambio de timestamp tipo object a datetime
     rating_source["timestamp"] = pd.to_datetime(rating_source["timestamp"])
+    
+    print("Procesando Data Rating - Copy de dataframe original")
     rating = rating_source.copy()
+    
+    # print("Procesando Data Rating - Obteniendo el promedio y el conteo de rating por usuario")
+    # grupo = rating.groupby(["userid", "movieid"])["rating"]
+    # rating_user_movies_promedio = grupo.mean()
+    # rating_user_movies_conteo = grupo.count()
+    # ratings_user_agg = pd.merge(rating_user_movies_promedio, rating_user_movies_conteo, on=["userid", "movieid"], how="left")
+    # print("Procesando Data Rating - Renombrado de columnas")
+    # # Cambio de nombre de columnas
+    # ratings_user_agg = ratings_user_agg.rename(
+    #     columns={
+    #         "rating_x": "rating_promedio",
+    #         "rating_y": "rating_conteo"
+    #     }
+    # )
+    # ratings_user_agg.reset_index(inplace=True)
+    # print(ratings_user_agg.head())
     
     print("Procesando Data Rating - Creando campos adicionales como 'year' y 'month'")
     # Creacion de dos columnas year y month 
@@ -141,7 +159,7 @@ def procesar_ratings(rating_source):
     ratings_agg_temp = ratings_agg_temp.replace(np.nan, 0)
     print("Procesando Data Rating - Eliminado de duplicados")
     # ratings_agg = ratings_agg_temp.drop_duplicates(subset=['movieid'])
-    ratings_agg = ratings_agg_temp
+    ratings_agg = ratings_agg_temp.copy()
     # print(ratings_agg)
     
     
@@ -177,7 +195,7 @@ def procesar_ratings(rating_source):
     
     # print(dim_rating.head())
         
-    return ratings_agg, dim_rating, rating_source
+    return ratings_agg, dim_rating, rating_source #, ratings_user_agg
 
 
 def join_unique_tags(tags):

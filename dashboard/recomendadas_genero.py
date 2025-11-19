@@ -38,7 +38,6 @@ def main():
     items_per_page = st.sidebar.selectbox(
         "Numero de Peliculas", ["10","15","20","25","30","50"]
     )
-    # # print(selected_genres)
     # --------------------------------------
     # Traer el listado de Movies recomendados por genero
     # --------------------------------------

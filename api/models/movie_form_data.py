@@ -9,3 +9,5 @@ class MovieFormData(BaseModel):
     count_slider_max: float | None = 0.0
     items_per_page: int  | None = 10
     movie_title: str | None = ""
+    filter: str | None = "Todas"
+    userid: int  | None = 0
