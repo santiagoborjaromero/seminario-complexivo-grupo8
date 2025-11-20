@@ -7,7 +7,7 @@ import json
 from api.models.auth import Auth
 
 api_routes = APIRouter()
-TAG = "Auth"
+TAG = "Autenticación"
 
 @api_routes.post(
     path="/login",

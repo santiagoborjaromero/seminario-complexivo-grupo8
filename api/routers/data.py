@@ -11,7 +11,7 @@ from api.utils.funciones import load_data
 from api.schemas.schema_user import userEntity, usersEntity
 
 data_routes = APIRouter()
-TAG = "General"
+TAG = "Datos"
 
 @data_routes.get(
     path="/data/users", 

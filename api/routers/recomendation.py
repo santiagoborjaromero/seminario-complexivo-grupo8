@@ -6,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from numpy.linalg import svd
 
 from api.utils.funciones import load_data
+TAG = "Recomendación"
 
 recommed_routes = APIRouter()
 
@@ -52,7 +53,7 @@ def recommend_collaborative(ratings, user_sim_df, userid, n=10):
     path="/recommendations/colaborativa/{userid}/{limit}", 
     summary="Recomendaciones por usuario", 
     description="Recomendacion bajo el modelo de filtrado colaborativo basado en KKN que es el modelo de calculo por vecindad utilizando la similitud del coseno", 
-    tags=["Recomendaciones"])
+    tags=[TAG])
 def colab(
         userid: Annotated[int, Path(title="Id del usuario a quien se debe hacer la recomendacion")],
         limit: Annotated[int, Path(title="Número de items a recomendar")]
@@ -64,7 +65,7 @@ def colab(
         movies_original = load_data("movie_perfil_contenido.csv")
         
         # -------------------------------------------
-        # FILTRO COLABORATIVO
+        # FILTRO COLABORATIVO - BASADO EN EL USUARIO
         # METODO BASADO EN VECINDAD - KNN K-Nearest Neighbors
         # -------------------------------------------
         
@@ -137,7 +138,7 @@ def colab(
     path="/recommendations/contenido/{genero}/{limit}", 
     summary="Recomendaciones por genero", 
     description="Recomendacion bajo el modelo de filtrado por contenido basado en KKN que es el modelo de calculo por vecindad utilizando la similitud del coseno", 
-    tags=["Recomendaciones"])
+    tags=[TAG])
 def contenido(
         genero: Annotated[str, Path(title="Genero de peliculas para realizar la recomendacion")],
         limit: Annotated[int, Path(title="Número de items a recomendar")]
@@ -192,7 +193,7 @@ def contenido(
     path="/recommendations/svd/{userid}/{limit}", 
     summary="Recomendaciones por usuario con el metodo SVD", 
     description="Recomendacion bajo el modelo de filtrado colaborativo basado en KKN que es el modelo de calculo por vecindad utilizando la similitud del coseno", 
-    tags=["Recomendaciones"])
+    tags=[TAG])
 def methodsvd(
         userid: Annotated[int, Path(title="Id del usuario a quien se debe hacer la recomendacion")],
         limit: Annotated[int, Path(title="Número de items a recomendar")]
@@ -285,7 +286,7 @@ def methodsvd(
     path="/recommendations/pelicula/{movie_title}", 
     summary="Recomendaciones por una pelicula determinada", 
     description="Recomendacion bajo el modelo de filtrado colaborativo basado en KKN que es el modelo de calculo por vecindad utilizando la similitud del coseno", 
-    tags=["Recomendaciones"])
+    tags=[TAG])
 def colab(
         movie_title: Annotated[str, Path(title="Nombre de la pelicula para hacer la recomendacion")]
     ):
@@ -296,7 +297,7 @@ def colab(
         movies_original = load_data("movie_perfil_contenido.csv")
         
         # -------------------------------------------
-        # FILTRO COLABORATIVO
+        # FILTRO COLABORATIVO - BASADO EN ELEMENTO
         # METODO BASADO EN VECINDAD - KNN K-Nearest Neighbors
         # -------------------------------------------
         

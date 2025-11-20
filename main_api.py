@@ -13,15 +13,15 @@ app = FastAPI(
     version="0.0.1 beta",
     openapi_tags=[
         {
-            "name": "Auth",
+            "name": "Autenticación",
             "description": "Procesos de autorización en el sistema",
         },
         {
-            "name": "General",
+            "name": "Datos",
             "description": "Data limpia y procesada como insumo de dasboard y para entrenamiento de machine learning",
         },
         {
-            "name": "Recomendaciones",
+            "name": "Recomendación",
             "description": "Proceso de Machine Learning para Filtrado Colaborativa y Filtrado por Contenido",
         },
     ]
