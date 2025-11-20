@@ -89,29 +89,34 @@ def colab(
         ratings_aggs.reset_index(inplace=True)
 
         print("Filtro Colaborativo - Obteniendo una matriz")
+        # Obteniendo una matriz
         user_movie_matrix = ratings.pivot(index='userid', columns='movieid', values='rating').fillna(0)
         
         print("Filtro Colaborativo - Calculando el coseno de similaridad")
+        # Calculando el coseno de similaridad
         user_sim = cosine_similarity(user_movie_matrix)
         
         print("Filtro Colaborativo - Creando el dataframe")
+        # Creando el dataframe
         user_sim_df = pd.DataFrame(user_sim, index=user_movie_matrix.index, columns=user_movie_matrix.index)
         
         print(f"Filtro Colaborativo - Calculando recomendacion para usuario {userid}")
+        # Calculando recomendacion para usuario
         collab_recs = recommend_collaborative(ratings, user_sim_df, userid, n=limit)
         
         print(f"Filtro Colaborativo - Trabajando con Movies")
         # trabajando con movies
-        # col_categoricas =["movieid","title","rating_promedio","rating_conteo","tag","tmdbid"]
         col_categoricas =["movieid", "title", "genres", "tag", "tmdbid"]
         movies = pd.DataFrame(movies_original, columns=col_categoricas)
         movies.reset_index(level=0, inplace=True)
         
         print("Filtro Colaborativo - filtrando data con la recomendacion")
+        # filtrando data con la recomendacion
         movies = movies[movies["movieid"].isin(collab_recs)]
         # print(movies.shape)
         
         print("Filtro Colaborativo - Uniendo recomendacion con data del las portadas de las peliculas")
+        # Uniendo recomendacion con data del las portadas de las peliculas
         mr_df = pd.merge(movies, ratings_aggs, left_on="movieid", right_on="movieid", how="left")
         mr_df = mr_df.sort_values(by="rating_conteo", ascending=False)
         ddata = mr_df.to_json(orient='records')
@@ -195,8 +200,11 @@ def methodsvd(
         
     try:
         print("Rating - Cargando data ")
+        #Rating - Cargando data 
         ratings_original = load_data("clean_rating.csv")
+        
         print("Movies - Cargando data ")
+        # Movies - Cargando data 
         movies_original = load_data(
             "movie_perfil_contenido.csv",
             # usecols = ["movieid", "title", "tmdbid", "genres"]
@@ -223,20 +231,31 @@ def methodsvd(
         #       V^T -> Es la traspuesta de una matriz ortogonal llamada V. Las columnas de V son los vectores singulares derechos, 
         #            y sus filas corresponden a las columnas de V^T
         
+        # to_numpy() es un método para convertir un objeto de tabla en un array de NumPy
+        
         print("SVD - Obteniendo valores de formula R=U×Σ×V^T ")
+        # Obteniendo valores 
         R = user_item_matrix.to_numpy()
         U, sigma, Vt = svd(R, full_matrices=False)
         
         print("SVD - Obteniendo recomendacion")
+        # Obteniendo recomendacion
+        # Numero de Vecinos 50
         k = 50
+        
+        # np.diag sirve para extraer la diagonal de una matriz 
         sigma_k = np.diag(sigma[:k])
 
+        # np.dot es una funciona de NumPy usada para calcular el valor escalar de dos arrays
         R_approx = np.dot(np.dot(U[:, :k], sigma_k), Vt[:k, :])
+
+        # Creando Dataframe
         R_pred_df = pd.DataFrame(R_approx, 
                                 index=user_item_matrix.index, 
                                 columns=user_item_matrix.columns)
         R_pred_df.head()
         
+        # LOC se utiliza para filtrar por indices
         user_ratings = user_item_matrix.loc[userid]
         user_predictions = R_pred_df.loc[userid]
 
